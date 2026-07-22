@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { name: "Home", href: "#hero" },
-  { name: "Rooms", href: "#visit" },
-  { name: "Amenities", href: "#features" },
+  { name: "Room Anatomy", href: "#room-story" },
+  { name: "Features", href: "#features" },
+  { name: "Amenities", href: "#amenities" },
   { name: "Gallery", href: "#gallery" },
+  { name: "Schedule Visit", href: "#schedule-visit" },
   { name: "Location", href: "#location" },
-  { name: "Schedule Visit", href: "#visit" },
 ];
 
-export default function Navbar() {
+function NavbarComponent() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
@@ -29,7 +30,7 @@ export default function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-[#F7F1E8]/80 backdrop-blur-md border-b border-[rgba(0,0,0,0.06)] shadow-sm py-4"
+            ? "bg-[#F7F1E8]/85 backdrop-blur-md border-b border-[rgba(0,0,0,0.06)] shadow-sm py-4"
             : "bg-transparent border-b border-transparent py-6"
         }`}
       >
@@ -45,12 +46,12 @@ export default function Navbar() {
           </a>
 
           {/* Desktop Navigation (Minimal Apple Style) */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-7">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-xs font-sans font-medium uppercase tracking-wider text-[#2D2D2D]/70 hover:text-[#2D2D2D] transition-colors relative py-1"
+                className="text-xs font-sans font-medium uppercase tracking-wider text-[#2D2D2D]/75 hover:text-[#7C8DBB] transition-colors relative py-1"
               >
                 {link.name}
               </a>
@@ -60,10 +61,10 @@ export default function Navbar() {
           {/* CTA Button */}
           <div className="hidden lg:flex items-center">
             <a
-              href="tel:+919999999999"
+              href="#schedule-visit"
               className="px-6 py-2.5 rounded-full text-xs font-sans font-semibold uppercase tracking-wider text-white bg-[#7C8DBB] hover:bg-[#6B7CA9] transition-all shadow-sm active:scale-95"
             >
-              Book Now
+              Book Visit
             </a>
           </div>
 
@@ -99,7 +100,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => setMobileDrawerOpen(false)}
               className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm lg:hidden"
             />
@@ -109,7 +110,7 @@ export default function Navbar() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               className="fixed top-0 right-0 bottom-0 z-50 w-4/5 max-w-sm bg-[#FFFDF9] border-l border-[rgba(0,0,0,0.06)] shadow-2xl p-8 flex flex-col justify-between lg:hidden"
             >
               <div>
@@ -130,16 +131,19 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Links */}
-                <nav className="flex flex-col gap-6">
-                  {navLinks.map((link) => (
-                    <a
+                <nav className="flex flex-col gap-5">
+                  {navLinks.map((link, idx) => (
+                    <motion.a
                       key={link.name}
                       href={link.href}
+                      initial={{ opacity: 0, x: 15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 + idx * 0.04, ease: [0.16, 1, 0.3, 1] }}
                       onClick={() => setMobileDrawerOpen(false)}
                       className="text-base font-sans font-medium text-[#2D2D2D] hover:text-[#7C8DBB] transition-colors"
                     >
                       {link.name}
-                    </a>
+                    </motion.a>
                   ))}
                 </nav>
               </div>
@@ -147,11 +151,11 @@ export default function Navbar() {
               {/* Mobile CTA */}
               <div className="pt-6 border-t border-[rgba(0,0,0,0.06)]">
                 <a
-                  href="tel:+919999999999"
+                  href="#schedule-visit"
                   onClick={() => setMobileDrawerOpen(false)}
                   className="w-full block py-3.5 rounded-full text-center text-xs font-sans font-semibold uppercase tracking-wider text-white bg-[#7C8DBB] hover:bg-[#6B7CA9] transition-colors shadow-sm"
                 >
-                  Book Now
+                  Schedule Visit
                 </a>
               </div>
             </motion.div>
@@ -161,3 +165,5 @@ export default function Navbar() {
     </>
   );
 }
+
+export default memo(NavbarComponent);
