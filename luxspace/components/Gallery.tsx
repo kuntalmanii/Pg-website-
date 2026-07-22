@@ -34,14 +34,14 @@ function GallerySection() {
 
   return (
     <section id="gallery" className="w-full section-padding bg-[#F7F1E8]">
-      <div className="apple-container">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mx-auto text-center mb-16 sm:mb-20"
+          className="max-w-3xl mx-auto text-center mb-16"
         >
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
             Space Showcase
@@ -51,7 +51,7 @@ function GallerySection() {
           </h2>
         </motion.div>
 
-        {/* Editorial Masonry Grid */}
+        {/* Editorial Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {galleryImages.map((image, index) => (
             <motion.div
@@ -66,10 +66,10 @@ function GallerySection() {
                 ease: [0.16, 1, 0.3, 1],
               }}
               whileHover={{ y: -4 }}
-              className="relative group rounded-[24px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-sm hover:shadow-md cursor-pointer"
+              className="relative group rounded-[24px] overflow-hidden bg-white border border-[rgba(0,0,0,0.06)] shadow-md cursor-pointer"
             >
               {/* Image with Next/Image and fixed aspect ratio container */}
-              <div className="overflow-hidden relative w-full aspect-[4/3] bg-[#050505]/5">
+              <div className="overflow-hidden relative w-full aspect-[4/3] bg-black/5">
                 <Image
                   src={image.src}
                   alt={image.title}
@@ -107,7 +107,7 @@ function GallerySection() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.96, opacity: 0, y: 10 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative max-w-5xl w-full max-h-[90vh] rounded-[24px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.1)] shadow-2xl flex flex-col justify-center"
+              className="relative max-w-5xl w-full max-h-[90vh] rounded-[24px] overflow-hidden bg-white border border-[rgba(0,0,0,0.1)] shadow-2xl flex flex-col justify-center"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative w-full aspect-[16/10] max-h-[75vh] bg-[#050505]">
@@ -122,7 +122,7 @@ function GallerySection() {
               </div>
 
               {/* Modal Footer Caption */}
-              <div className="p-6 bg-[#FFFDF9] flex items-center justify-between border-t border-[rgba(0,0,0,0.06)]">
+              <div className="p-6 bg-white flex items-center justify-between border-t border-[rgba(0,0,0,0.06)]">
                 <span className="font-serif text-xl font-semibold text-[#2D2D2D]">
                   {selectedImage.title}
                 </span>

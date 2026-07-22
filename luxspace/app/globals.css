@@ -7,7 +7,7 @@
   --color-secondary: #A7B7E7;
   --color-text: #2D2D2D;
   --color-accent: #7C8DBB;
-  --color-card: #FFFDF9;
+  --color-card: #FFFFFF;
 }
 
 :root {
@@ -17,7 +17,7 @@
   --color-text: #2D2D2D;
   --color-text-muted: rgba(45, 45, 45, 0.65);
   --color-accent: #7C8DBB;
-  --color-card: #FFFDF9;
+  --color-card: #FFFFFF;
   --color-border: rgba(0, 0, 0, 0.06);
   --color-border-hover: rgba(0, 0, 0, 0.12);
 
@@ -76,31 +76,38 @@
 
 /* Luxury Card Token */
 .luxury-card {
-  background-color: var(--color-card);
+  background-color: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.04);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .luxury-card:hover {
   border-color: var(--color-border-hover);
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.08);
 }
 
-/* Apple-style Spacing & Section Utilities */
+/* Standard Section Spacing & Container Width Rules */
 .section-padding {
-  padding-top: clamp(80px, 10vw, 140px);
-  padding-bottom: clamp(80px, 10vw, 140px);
+  padding-top: 7rem; /* py-28 */
+  padding-bottom: 7rem; /* py-28 */
 }
 
 .apple-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 80rem; /* max-w-7xl */
   margin-left: auto;
   margin-right: auto;
-  padding-left: clamp(20px, 5vw, 48px);
-  padding-right: clamp(20px, 5vw, 48px);
+  padding-left: 1.5rem; /* px-6 */
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .apple-container {
+    padding-left: 3rem; /* lg:px-12 */
+    padding-right: 3rem;
+  }
 }
 
 /* Custom Scrollbar */

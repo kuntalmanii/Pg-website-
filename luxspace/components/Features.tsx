@@ -163,14 +163,14 @@ const cardVariants: Variants = {
 function FeaturesSection() {
   return (
     <section id="features" className="w-full section-padding bg-[#F7F1E8]">
-      <div className="apple-container">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mx-auto text-center mb-16 sm:mb-20"
+          className="max-w-3xl mx-auto text-center mb-16"
         >
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
             Designed For Living
@@ -194,9 +194,9 @@ function FeaturesSection() {
               variants={cardVariants}
               whileHover={{ y: -3 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="luxury-card p-8 flex items-start gap-6 bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] rounded-[24px] shadow-sm hover:shadow-md transition-shadow"
+              className="luxury-card p-8 flex items-start gap-6 bg-white border border-[rgba(0,0,0,0.06)] rounded-[24px] shadow-sm hover:shadow-md transition-shadow"
             >
-              {/* Minimal Line Icon Container */}
+              {/* Minimal Line Icon Container: w-12 h-12 */}
               <div className="w-12 h-12 rounded-2xl bg-[#A7B7E7]/15 text-[#7C8DBB] flex items-center justify-center shrink-0">
                 {feature.icon}
               </div>

@@ -71,14 +71,14 @@ const amenitiesData: AmenityBlock[] = [
 function AmenitiesSection() {
   return (
     <section id="amenities" className="w-full section-padding bg-[#F7F1E8]">
-      <div className="apple-container">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mx-auto text-center mb-20 sm:mb-28"
+          className="max-w-3xl mx-auto text-center mb-16"
         >
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
             Life at LuxSpace
@@ -89,7 +89,7 @@ function AmenitiesSection() {
         </motion.div>
 
         {/* Editorial Alternating Image/Text Blocks */}
-        <div className="flex flex-col gap-16 sm:gap-24">
+        <div className="flex flex-col gap-16 sm:gap-20">
           {amenitiesData.map((item, index) => {
             const isEven = index % 2 === 0;
             return (
@@ -105,7 +105,7 @@ function AmenitiesSection() {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full md:w-1/2 aspect-[16/11] rounded-[28px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-md group relative"
+                  className="w-full md:w-1/2 aspect-[16/11] rounded-[24px] overflow-hidden bg-white border border-[rgba(0,0,0,0.06)] shadow-md group relative"
                 >
                   <Image
                     src={item.image}
@@ -113,7 +113,7 @@ function AmenitiesSection() {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out rounded-[24px]"
                   />
                 </motion.div>
 

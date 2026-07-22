@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, memo } from "react";
+import { useState, useRef, memo } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 interface Hotspot {
   id: string;
@@ -17,176 +17,196 @@ interface Hotspot {
 const roomHotspots: Hotspot[] = [
   {
     id: "bed",
-    name: "Bed",
-    detail: "Solid wood frame with orthopaedic mattress & crisp linens",
+    name: "Bed & Orthopaedic Mattress",
+    detail: "Solid wood frame equipped with premium orthopaedic mattress and crisp luxury linens for restful sleep.",
     top: "62%",
     left: "28%",
-    scrollStart: 0.15,
-    scrollEnd: 0.3,
+    scrollStart: 0.1,
+    scrollEnd: 0.25,
   },
   {
     id: "study",
-    name: "Study Table",
-    detail: "Dedicated ergonomic study desk with laptop charging station",
+    name: "Ergonomic Study Table",
+    detail: "Dedicated study desk with laptop charging station, cable management, and comfortable task chair.",
     top: "54%",
     left: "48%",
-    scrollStart: 0.3,
-    scrollEnd: 0.45,
+    scrollStart: 0.25,
+    scrollEnd: 0.4,
   },
   {
     id: "wardrobe",
-    name: "Wardrobe",
-    detail: "Full-height modular storage wardrobe with lockable drawer",
+    name: "Modular Storage Wardrobe",
+    detail: "Full-height modular storage wardrobe with lockable drawer, clothes hanging bar, and shoe rack.",
     top: "35%",
     left: "15%",
-    scrollStart: 0.45,
-    scrollEnd: 0.6,
+    scrollStart: 0.4,
+    scrollEnd: 0.55,
   },
   {
     id: "ac",
-    name: "AC",
-    detail: "Individual quiet inverter air conditioner unit",
+    name: "Split Air Conditioner",
+    detail: "Individual quiet inverter split air conditioner unit for complete personal climate control.",
     top: "28%",
     left: "82%",
-    scrollStart: 0.6,
-    scrollEnd: 0.72,
+    scrollStart: 0.55,
+    scrollEnd: 0.7,
   },
   {
     id: "washroom",
-    name: "Washroom",
-    detail: "Ensuite private attached bathroom with hot water geyser",
+    name: "Attached Ensuite Washroom",
+    detail: "Private attached washroom with modern bathroom fixtures, hot water geyser & vanity mirror.",
     top: "40%",
     left: "92%",
-    scrollStart: 0.72,
+    scrollStart: 0.7,
     scrollEnd: 0.85,
   },
   {
     id: "lighting",
-    name: "Lighting",
-    detail: "Warm ambient bedside lamp & focused study task lights",
+    name: "Warm Ambient Lighting",
+    detail: "Warm ambient bedside illumination paired with focused study reading lights.",
     top: "52%",
     left: "74%",
     scrollStart: 0.85,
-    scrollEnd: 0.95,
+    scrollEnd: 1.0,
   },
 ];
 
-function HotspotPin({ hotspot, progress }: { hotspot: Hotspot; progress: MotionValue<number> }) {
-  const pStartMinus = Math.max(0, hotspot.scrollStart - 0.04);
-  const pStart = Math.max(0, Math.min(1, hotspot.scrollStart));
-  const pEnd = Math.max(0, Math.min(1, hotspot.scrollEnd));
-  const pEndPlus = Math.min(1, hotspot.scrollEnd + 0.04);
-
-  const opacity = useTransform(
-    progress,
-    [pStartMinus, pStart, pEnd, pEndPlus],
-    [0, 1, 1, 0]
-  );
-
-  const scale = useTransform(
-    progress,
-    [pStartMinus, pStart, pEnd],
-    [0.7, 1, 1]
-  );
-
-  const isRightSide = parseInt(hotspot.left) > 60;
-
-  return (
-    <motion.div
-      style={{
-        top: hotspot.top,
-        left: hotspot.left,
-        opacity,
-        scale,
-      }}
-      className="absolute -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none"
-    >
-      {/* Pulsing Target Ring */}
-      <div className="relative flex items-center justify-center">
-        <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-[#7C8DBB]/40 opacity-75" />
-        <span className="relative inline-flex rounded-full h-4 w-4 bg-[#7C8DBB] border-2 border-white shadow-md" />
-      </div>
-
-      {/* Floating Glass Annotation Badge */}
-      <div
-        className={`absolute top-1/2 -translate-y-1/2 w-56 sm:w-64 p-3.5 sm:p-4 rounded-2xl bg-[#FFFDF9]/95 backdrop-blur-md border border-[rgba(0,0,0,0.08)] shadow-xl text-left ${
-          isRightSide ? "right-6" : "left-6"
-        }`}
-      >
-        <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7C8DBB] block mb-1">
-          Feature
-        </span>
-        <h4 className="font-serif text-base sm:text-lg font-bold text-[#2D2D2D] leading-tight mb-1">
-          {hotspot.name}
-        </h4>
-        <p className="font-sans text-xs text-[#2D2D2D]/70 font-light leading-relaxed">
-          {hotspot.detail}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
-
 function RoomStorySection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [selectedHotspot, setSelectedHotspot] = useState<Hotspot>(roomHotspots[0]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  const roomOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.12, 0.95, 1],
-    [0.2, 1, 1, 0.4]
-  );
+  // Track active hotspot based on scroll progress
+  scrollYProgress.on("change", (latest) => {
+    const current = roomHotspots.find(
+      (h) => latest >= h.scrollStart && latest <= h.scrollEnd
+    );
+    if (current && current.id !== selectedHotspot.id) {
+      setSelectedHotspot(current);
+    }
+  });
 
   return (
-    <section ref={containerRef} className="relative w-full h-[300vh] bg-[#F7F1E8]">
-      {/* Sticky Viewport Container */}
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex flex-col justify-center items-center">
-        {/* Section Title Header Overlay */}
-        <div className="absolute top-20 sm:top-24 left-0 right-0 z-40 apple-container text-center pointer-events-none">
-          <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-2">
-            Interactive Room Tour
+    <section ref={containerRef} id="room-story" className="relative w-full bg-[#F7F1E8] section-padding">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
+            Interactive Tour
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-semibold text-[#2D2D2D]">
             Crafted Room Anatomy
           </h2>
+          <p className="font-sans text-sm sm:text-base text-[#2D2D2D]/70 mt-3">
+            Scroll or click on room hotspots to explore each handcrafted interior feature.
+          </p>
         </div>
 
-        {/* Room High-Res Image Showcase Frame */}
-        <motion.div
-          style={{ opacity: roomOpacity }}
-          className="relative w-full max-w-5xl aspect-[16/10] sm:aspect-[16/9] mx-auto px-4 sm:px-6 rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-2xl border border-[rgba(0,0,0,0.06)] bg-[#FFFDF9]"
-        >
-          <Image
-            src="/gallery/room-1.jpg"
-            alt="LuxSpace Premium Room Tour"
-            fill
-            priority
-            sizes="(max-width: 1200px) 100vw, 1200px"
-            className="w-full h-full object-cover rounded-[24px] sm:rounded-[28px]"
-          />
-
-          {/* Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20 pointer-events-none rounded-[24px] sm:rounded-[28px]" />
-
-          {/* Hotspot Annotations */}
-          {roomHotspots.map((hotspot) => (
-            <HotspotPin
-              key={hotspot.id}
-              hotspot={hotspot}
-              progress={scrollYProgress}
+        {/* Side-by-Side Grid: Left Room Image + Hotspots | Right Side Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left / Main Column: Room Image Frame with Overlaid Hotspot Pins */}
+          <div className="lg:col-span-8 relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-[24px] overflow-hidden shadow-xl border border-[rgba(0,0,0,0.06)] bg-white">
+            <Image
+              src="/gallery/room-1.jpg"
+              alt="LuxSpace Premium Room Anatomy"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              className="object-cover rounded-[24px]"
             />
-          ))}
-        </motion.div>
 
-        {/* Scroll Instruction Indicator */}
-        <div className="absolute bottom-6 sm:bottom-8 z-40 text-center pointer-events-none">
-          <span className="text-[11px] font-sans uppercase tracking-widest text-[#2D2D2D]/50">
-            Scroll to inspect room features ↓
-          </span>
+            {/* Subtle Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none rounded-[24px]" />
+
+            {/* Overlaid Hotspot Pins */}
+            {roomHotspots.map((hotspot) => {
+              const isActive = selectedHotspot.id === hotspot.id;
+
+              return (
+                <button
+                  key={hotspot.id}
+                  type="button"
+                  onClick={() => setSelectedHotspot(hotspot)}
+                  style={{ top: hotspot.top, left: hotspot.left }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 z-30 cursor-pointer group focus:outline-none"
+                  aria-label={`View details for ${hotspot.name}`}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <span
+                      className={`animate-ping absolute inline-flex h-8 w-8 rounded-full bg-[#7C8DBB]/40 ${
+                        isActive ? "opacity-100" : "opacity-0 group-hover:opacity-75"
+                      } transition-opacity`}
+                    />
+                    <span
+                      className={`relative inline-flex rounded-full transition-all ${
+                        isActive
+                          ? "h-5 w-5 bg-[#7C8DBB] border-2 border-white shadow-lg scale-110"
+                          : "h-4 w-4 bg-white/90 border-2 border-[#7C8DBB] group-hover:scale-110"
+                      }`}
+                    />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Column: Side Panel with Feature Details & Interactive Hotspot Selector */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            {/* Active Feature Detail Card */}
+            <motion.div
+              key={selectedHotspot.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="luxury-card p-6 sm:p-8 bg-white rounded-[24px] border border-[rgba(0,0,0,0.06)] shadow-md space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-sans font-semibold uppercase tracking-widest text-[#7C8DBB]">
+                  Feature Highlight
+                </span>
+                <span className="w-2 h-2 rounded-full bg-[#7C8DBB]" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#2D2D2D]">
+                {selectedHotspot.name}
+              </h3>
+              <p className="font-sans text-sm text-[#2D2D2D]/75 leading-relaxed font-light">
+                {selectedHotspot.detail}
+              </p>
+            </motion.div>
+
+            {/* List of Features Selector */}
+            <div className="luxury-card p-4 bg-white rounded-[24px] border border-[rgba(0,0,0,0.06)] shadow-sm space-y-2">
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#2D2D2D]/50 px-3 block mb-1">
+                Select Feature
+              </span>
+              {roomHotspots.map((h) => {
+                const isCurrent = selectedHotspot.id === h.id;
+                return (
+                  <button
+                    key={h.id}
+                    type="button"
+                    onClick={() => setSelectedHotspot(h)}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-sans font-medium transition-all flex items-center justify-between ${
+                      isCurrent
+                        ? "bg-[#7C8DBB] text-white shadow-sm font-semibold"
+                        : "text-[#2D2D2D]/80 hover:bg-[#F7F1E8]"
+                    }`}
+                  >
+                    <span>{h.name}</span>
+                    {isCurrent && (
+                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

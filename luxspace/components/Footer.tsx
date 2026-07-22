@@ -15,7 +15,7 @@ function FooterSection() {
 
   return (
     <footer className="w-full bg-[#F3ECE2] border-t border-[rgba(0,0,0,0.06)] pt-16 sm:pt-20 pb-12">
-      <div className="apple-container">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Main Footer Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 sm:gap-16 pb-16 border-b border-[rgba(0,0,0,0.06)]">
           {/* Column 1: Logo & Brand Description (4 cols) */}
@@ -108,7 +108,6 @@ function FooterSection() {
 
           {/* Minimal Line Social Icons */}
           <div className="flex items-center gap-4 text-[#2D2D2D]/60">
-            {/* Instagram */}
             <a
               href="https://instagram.com"
               target="_blank"
@@ -123,7 +122,6 @@ function FooterSection() {
               </svg>
             </a>
 
-            {/* WhatsApp */}
             <a
               href="https://wa.me/919876543210"
               target="_blank"
@@ -137,7 +135,6 @@ function FooterSection() {
               </svg>
             </a>
 
-            {/* Facebook */}
             <a
               href="https://facebook.com"
               target="_blank"
@@ -150,7 +147,6 @@ function FooterSection() {
               </svg>
             </a>
 
-            {/* LinkedIn */}
             <a
               href="https://linkedin.com"
               target="_blank"

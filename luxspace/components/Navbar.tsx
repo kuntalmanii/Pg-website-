@@ -30,11 +30,11 @@ function NavbarComponent() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-[#F7F1E8]/85 backdrop-blur-md border-b border-[rgba(0,0,0,0.06)] shadow-sm py-4"
+            ? "bg-[#F7F1E8]/90 backdrop-blur-md border-b border-[rgba(0,0,0,0.06)] shadow-sm py-4"
             : "bg-transparent border-b border-transparent py-6"
         }`}
       >
-        <div className="apple-container flex items-center justify-between">
+        <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full flex items-center justify-between">
           {/* Logo Left */}
           <a href="#hero" className="flex items-center gap-3 group">
             <span className="font-serif text-2xl font-bold tracking-tight text-[#2D2D2D]">
@@ -111,7 +111,7 @@ function NavbarComponent() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-4/5 max-w-sm bg-[#FFFDF9] border-l border-[rgba(0,0,0,0.06)] shadow-2xl p-8 flex flex-col justify-between lg:hidden"
+              className="fixed top-0 right-0 bottom-0 z-50 w-4/5 max-w-sm bg-white border-l border-[rgba(0,0,0,0.06)] shadow-2xl p-8 flex flex-col justify-between lg:hidden"
             >
               <div>
                 {/* Header inside drawer */}

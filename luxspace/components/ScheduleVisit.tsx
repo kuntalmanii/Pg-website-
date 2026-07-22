@@ -116,14 +116,14 @@ function ScheduleVisitSection({
 
   return (
     <section id="schedule-visit" className={`w-full section-padding bg-[#F7F1E8] ${className}`}>
-      <div className="apple-container max-w-4xl mx-auto">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-12 sm:mb-16"
+          className="max-w-3xl mx-auto text-center mb-16"
         >
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
             {subtitle}
@@ -142,7 +142,7 @@ function ScheduleVisitSection({
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="luxury-card p-6 sm:p-10 md:p-12 bg-[#FFFDF9] rounded-[28px] border border-[rgba(0,0,0,0.06)] shadow-xl relative overflow-hidden"
+          className="luxury-card max-w-4xl mx-auto p-6 sm:p-10 md:p-12 bg-white rounded-[24px] border border-[rgba(0,0,0,0.06)] shadow-xl relative overflow-hidden"
         >
           <AnimatePresence mode="wait">
             {isSubmitted ? (

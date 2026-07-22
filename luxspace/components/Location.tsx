@@ -45,9 +45,9 @@ function LocationSection() {
 
   return (
     <section id="location" className="w-full section-padding bg-[#F7F1E8]">
-      <div className="apple-container">
+      <div className="apple-container max-w-7xl mx-auto px-6 lg:px-12 w-full">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+        <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-3">
             Prime Noida Address
           </span>
@@ -67,12 +67,12 @@ function LocationSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-6 luxury-card rounded-[28px] overflow-hidden border border-[rgba(0,0,0,0.06)] shadow-xl min-h-[380px] sm:min-h-[460px] relative bg-[#FFFDF9] flex flex-col"
+            className="lg:col-span-6 luxury-card rounded-[24px] overflow-hidden border border-[rgba(0,0,0,0.06)] shadow-xl min-h-[380px] sm:min-h-[460px] relative bg-white flex flex-col"
           >
             <iframe
               title="LuxSpace Noida Location Map"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3505.5188849491024!2d77.3328424!3d28.5391585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce5a43173357b%3A0x37ff13028d7a1267!2sSector%20126%2C%20Noida%2C%20Uttar%20Pradesh%20201313!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-              className="w-full h-full min-h-[380px] sm:min-h-[460px] border-0"
+              className="w-full h-full min-h-[380px] sm:min-h-[460px] border-0 rounded-[24px]"
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -88,7 +88,7 @@ function LocationSection() {
             className="lg:col-span-6 flex flex-col justify-between space-y-6"
           >
             {/* Primary Address & Distance Summary Card */}
-            <div className="luxury-card p-6 sm:p-8 rounded-[28px] bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-lg space-y-6">
+            <div className="luxury-card p-6 sm:p-8 rounded-[24px] bg-white border border-[rgba(0,0,0,0.06)] shadow-md space-y-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#7C8DBB]/15 text-[#7C8DBB] flex items-center justify-center shrink-0 mt-1">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -142,7 +142,7 @@ function LocationSection() {
                 {nearbyHighlights.map((item) => (
                   <div
                     key={item.title}
-                    className="luxury-card p-4 rounded-2xl bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-sm hover:shadow-md transition-shadow"
+                    className="luxury-card p-4 rounded-[20px] bg-white border border-[rgba(0,0,0,0.06)] shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="mb-2">{item.icon}</div>
                     <h4 className="font-serif text-sm font-bold text-[#2D2D2D] leading-snug">
