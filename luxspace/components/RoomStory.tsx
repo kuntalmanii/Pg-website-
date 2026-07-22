@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, memo } from "react";
+import { useState, useRef, memo, useEffect } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 
 interface Hotspot {
   id: string;
@@ -80,15 +80,17 @@ function RoomStorySection() {
     offset: ["start start", "end end"],
   });
 
-  // Track active hotspot based on scroll progress
-  scrollYProgress.on("change", (latest) => {
-    const current = roomHotspots.find(
-      (h) => latest >= h.scrollStart && latest <= h.scrollEnd
-    );
-    if (current && current.id !== selectedHotspot.id) {
-      setSelectedHotspot(current);
-    }
-  });
+  // Track active hotspot safely inside useEffect
+  useEffect(() => {
+    return scrollYProgress.on("change", (latest) => {
+      const current = roomHotspots.find(
+        (h) => latest >= h.scrollStart && latest <= h.scrollEnd
+      );
+      if (current && current.id !== selectedHotspot.id) {
+        setSelectedHotspot(current);
+      }
+    });
+  }, [scrollYProgress, selectedHotspot.id]);
 
   return (
     <section ref={containerRef} id="room-story" className="relative w-full bg-[#F7F1E8] section-padding">
