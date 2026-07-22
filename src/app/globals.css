@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Luxspace Design Tokens ─────────────────────────────────────────────── */
+:root {
+  /* Brand Palette */
+  --beige-light:    #FDFBF7;
+  --beige-card:     #F4EFEA;
+  --twilight-haze:  #A7B7E7;
+  --dark-void:      #050505;
+  --sony-blue:      #0050FF;
+
+  /* Typography scale */
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.75rem;
+  --text-7xl:  4.5rem;
+
+  /* Spacing / Radius */
+  --radius-sm:  0.375rem;
+  --radius-md:  0.75rem;
+  --radius-lg:  1.25rem;
+  --radius-xl:  2rem;
+  --radius-full: 9999px;
+
+  /* Glass */
+  --glass-bg:          rgba(253, 251, 247, 0.08);
+  --glass-border:      rgba(167, 183, 231, 0.18);
+  --glass-blur:        blur(18px);
+  --glass-highlight:   inset 0 1px 0 0 rgba(255, 255, 255, 0.10);
+
+  /* Noise texture — inline SVG, reused across utilities */
+  --noise-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+
+  /* Glow radii */
+  --glow-twilight-color: rgba(167, 183, 231, 0.15);
+  --glow-blue-color:     rgba(0,  80,  255, 0.10);
+}
+
+/* ─── Smooth Scroll & Base Reset ─────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--beige-light);
+  color: var(--dark-void);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* ─── Utility Classes ─────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Backgrounds */
+  .bg-beige-light   { background-color: var(--beige-light); }
+  .bg-beige-card    { background-color: var(--beige-card); }
+  .bg-twilight-haze { background-color: var(--twilight-haze); }
+  .bg-dark-void     { background-color: var(--dark-void); }
+  .bg-sony-blue     { background-color: var(--sony-blue); }
+
+  /* Text colours */
+  .text-beige-light   { color: var(--beige-light); }
+  .text-beige-card    { color: var(--beige-card); }
+  .text-twilight-haze { color: var(--twilight-haze); }
+  .text-dark-void     { color: var(--dark-void); }
+  .text-sony-blue     { color: var(--sony-blue); }
+
+  /* Border colours */
+  .border-twilight-haze { border-color: var(--twilight-haze); }
+  .border-glass         { border-color: var(--glass-border); }
+
+  /* ── Glassmorphism — upgraded ───────────────────────────────────────── */
+
+  /* Light glass (for dark backgrounds — hero, scrollytelling) */
+  .glass {
+    background:            rgba(253, 251, 247, 0.08);
+    border:                1px solid rgba(167, 183, 231, 0.20);
+    backdrop-filter:       blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow:            var(--glass-highlight),
+                           0 4px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Dark glass (for light backgrounds — modals, cards on beige) */
+  .glass-dark {
+    background:            rgba(5, 5, 5, 0.55);
+    border:                1px solid rgba(255, 255, 255, 0.07);
+    backdrop-filter:       blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow:            inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+                           0 8px 32px rgba(0, 0, 0, 0.40);
+  }
+
+  /* Beige glass (lighter panels on beige sections) */
+  .glass-light {
+    background:            rgba(253, 251, 247, 0.65);
+    border:                1px solid rgba(167, 183, 231, 0.22);
+    backdrop-filter:       blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow:            inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
+                           0 4px 20px rgba(167, 183, 231, 0.12);
+  }
+
+  /* ── Noise texture overlay ───────────────────────────────────────────── */
+
+  .bg-noise {
+    position: relative;
+  }
+  .bg-noise::after {
+    content:          '';
+    pointer-events:   none;
+    position:         absolute;
+    inset:            0;
+    opacity:          0.02;
+    background-image: var(--noise-url);
+    background-repeat: repeat;
+    background-size:  200px 200px;
+    border-radius:    inherit;
+    z-index:          1;
+  }
+
+  /* Ensure children sit above the ::after noise layer */
+  .bg-noise > * {
+    position: relative;
+    z-index:  2;
+  }
+
+  /* ── Ambient glow utilities ──────────────────────────────────────────── */
+
+  /* Floating Twilight Haze blob — add to a relative container */
+  .glow-twilight {
+    position:   relative;
+    overflow:   hidden;
+  }
+  .glow-twilight::before {
+    content:       '';
+    pointer-events: none;
+    position:      absolute;
+    top:           -30%;
+    left:          -20%;
+    width:         70%;
+    height:        70%;
+    background:    radial-gradient(ellipse at center, var(--glow-twilight-color) 0%, transparent 70%);
+    filter:        blur(48px);
+    border-radius: 50%;
+    z-index:       0;
+    animation:     glowDrift 8s ease-in-out infinite alternate;
+  }
+
+  /* Floating Sony Blue blob */
+  .glow-blue {
+    position:   relative;
+    overflow:   hidden;
+  }
+  .glow-blue::before {
+    content:       '';
+    pointer-events: none;
+    position:      absolute;
+    bottom:        -20%;
+    right:         -15%;
+    width:         60%;
+    height:        60%;
+    background:    radial-gradient(ellipse at center, var(--glow-blue-color) 0%, transparent 70%);
+    filter:        blur(56px);
+    border-radius: 50%;
+    z-index:       0;
+    animation:     glowDrift 10s ease-in-out infinite alternate-reverse;
+  }
+
+  /* ── Animated border-beam gradient ──────────────────────────────────── */
+
+  /*
+   * Usage: wrap element with a .border-gradient container.
+   * The ::before pseudo draws the spinning conic gradient; the
+   * element itself sits inside with a slight inset to expose the beam.
+   */
+  .border-gradient {
+    position: relative;
+    border-radius: inherit;
+    isolation: isolate;
+  }
+  .border-gradient::before {
+    content:       '';
+    pointer-events: none;
+    position:      absolute;
+    inset:         -1px;
+    border-radius: inherit;
+    padding:       1px;
+    background:    conic-gradient(
+                     from var(--border-angle, 0deg),
+                     transparent 0%,
+                     #A7B7E7     20%,
+                     #0050FF     40%,
+                     transparent 60%
+                   );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation:     borderSpin 4s linear infinite;
+    opacity:       0;
+    transition:    opacity 0.3s ease;
+    z-index:       -1;
+  }
+  .border-gradient:hover::before {
+    opacity: 1;
+  }
+
+  /* ── Typography helpers ──────────────────────────────────────────────── */
+
+  .text-editorial {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .text-caption {
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── Transitions ─────────────────────────────────────────────────────── */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--beige-card); }
+::-webkit-scrollbar-thumb {
+  background: var(--twilight-haze);
+  border-radius: var(--radius-full);
+}
+
+/* ─── Keyframe Animations ─────────────────────────────────────────────────── */
+
+/* Border-beam conic spin */
+@property --border-angle {
+  syntax:        '<angle>';
+  initial-value: 0deg;
+  inherits:      false;
+}
+
+@keyframes borderSpin {
+  to { --border-angle: 360deg; }
+}
+
+/* Ambient glow drift — subtle organic movement */
+@keyframes glowDrift {
+  0%   { transform: translate(0%,   0%)   scale(1);    opacity: 0.8; }
+  33%  { transform: translate(6%,  -8%)   scale(1.08); opacity: 1;   }
+  66%  { transform: translate(-4%,  5%)   scale(0.96); opacity: 0.9; }
+  100% { transform: translate(3%,  -3%)   scale(1.04); opacity: 0.85; }
+}
+
+/* Glow pulse — for static spotlight elements */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.12); }
+}
+
+/* Shimmer — for skeleton loaders or highlight sweeps */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
