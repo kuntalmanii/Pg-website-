@@ -89,6 +89,8 @@ function HotspotPin({ hotspot, progress }: { hotspot: Hotspot; progress: MotionV
     [0.7, 1, 1]
   );
 
+  const isRightSide = parseInt(hotspot.left) > 60;
+
   return (
     <motion.div
       style={{
@@ -106,11 +108,15 @@ function HotspotPin({ hotspot, progress }: { hotspot: Hotspot; progress: MotionV
       </div>
 
       {/* Floating Glass Annotation Badge */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 w-64 p-4 rounded-2xl bg-[#FFFDF9]/95 backdrop-blur-md border border-[rgba(0,0,0,0.08)] shadow-xl text-left">
+      <div
+        className={`absolute top-1/2 -translate-y-1/2 w-56 sm:w-64 p-3.5 sm:p-4 rounded-2xl bg-[#FFFDF9]/95 backdrop-blur-md border border-[rgba(0,0,0,0.08)] shadow-xl text-left ${
+          isRightSide ? "right-6" : "left-6"
+        }`}
+      >
         <span className="text-[10px] font-sans font-semibold uppercase tracking-widest text-[#7C8DBB] block mb-1">
           Feature
         </span>
-        <h4 className="font-serif text-lg font-bold text-[#2D2D2D] leading-tight mb-1">
+        <h4 className="font-serif text-base sm:text-lg font-bold text-[#2D2D2D] leading-tight mb-1">
           {hotspot.name}
         </h4>
         <p className="font-sans text-xs text-[#2D2D2D]/70 font-light leading-relaxed">
@@ -140,7 +146,7 @@ function RoomStorySection() {
       {/* Sticky Viewport Container */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex flex-col justify-center items-center">
         {/* Section Title Header Overlay */}
-        <div className="absolute top-24 left-0 right-0 z-40 apple-container text-center pointer-events-none">
+        <div className="absolute top-20 sm:top-24 left-0 right-0 z-40 apple-container text-center pointer-events-none">
           <span className="text-xs font-sans font-semibold uppercase tracking-[0.25em] text-[#7C8DBB] block mb-2">
             Interactive Room Tour
           </span>
@@ -152,7 +158,7 @@ function RoomStorySection() {
         {/* Room High-Res Image Showcase Frame */}
         <motion.div
           style={{ opacity: roomOpacity }}
-          className="relative w-full max-w-6xl aspect-[16/9] mx-auto px-4 sm:px-6 rounded-[32px] overflow-hidden shadow-2xl border border-[rgba(0,0,0,0.06)] bg-[#FFFDF9]"
+          className="relative w-full max-w-5xl aspect-[16/10] sm:aspect-[16/9] mx-auto px-4 sm:px-6 rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-2xl border border-[rgba(0,0,0,0.06)] bg-[#FFFDF9]"
         >
           <Image
             src="/gallery/room-1.jpg"
@@ -160,11 +166,11 @@ function RoomStorySection() {
             fill
             priority
             sizes="(max-width: 1200px) 100vw, 1200px"
-            className="w-full h-full object-cover rounded-[28px]"
+            className="w-full h-full object-cover rounded-[24px] sm:rounded-[28px]"
           />
 
           {/* Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20 pointer-events-none rounded-[28px]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20 pointer-events-none rounded-[24px] sm:rounded-[28px]" />
 
           {/* Hotspot Annotations */}
           {roomHotspots.map((hotspot) => (
@@ -177,7 +183,7 @@ function RoomStorySection() {
         </motion.div>
 
         {/* Scroll Instruction Indicator */}
-        <div className="absolute bottom-8 z-40 text-center pointer-events-none">
+        <div className="absolute bottom-6 sm:bottom-8 z-40 text-center pointer-events-none">
           <span className="text-[11px] font-sans uppercase tracking-widest text-[#2D2D2D]/50">
             Scroll to inspect room features ↓
           </span>

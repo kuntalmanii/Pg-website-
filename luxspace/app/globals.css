@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@theme {
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-sans: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-primary: #F7F1E8;
+  --color-secondary: #A7B7E7;
+  --color-text: #2D2D2D;
+  --color-accent: #7C8DBB;
+  --color-card: #FFFDF9;
+}
+
 :root {
   /* Brand Color Palette */
   --color-primary: #F7F1E8;
@@ -80,8 +90,8 @@
 
 /* Apple-style Spacing & Section Utilities */
 .section-padding {
-  padding-top: clamp(80px, 12vw, 160px);
-  padding-bottom: clamp(80px, 12vw, 160px);
+  padding-top: clamp(80px, 10vw, 140px);
+  padding-bottom: clamp(80px, 10vw, 140px);
 }
 
 .apple-container {

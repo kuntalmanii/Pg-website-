@@ -52,7 +52,7 @@ function GallerySection() {
         </motion.div>
 
         {/* Editorial Masonry Grid */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {galleryImages.map((image, index) => (
             <motion.div
               key={image.src}
@@ -66,22 +66,22 @@ function GallerySection() {
                 ease: [0.16, 1, 0.3, 1],
               }}
               whileHover={{ y: -4 }}
-              className="break-inside-avoid relative group rounded-[24px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-sm cursor-pointer"
+              className="relative group rounded-[24px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.06)] shadow-sm hover:shadow-md cursor-pointer"
             >
-              {/* Image with Next/Image and hover zoom */}
-              <div className="overflow-hidden relative w-full h-auto">
+              {/* Image with Next/Image and fixed aspect ratio container */}
+              <div className="overflow-hidden relative w-full aspect-[4/3] bg-[#050505]/5">
                 <Image
                   src={image.src}
                   alt={image.title}
-                  width={600}
-                  height={450}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   loading="lazy"
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
               </div>
 
               {/* Minimal Editorial Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                 <span className="font-serif text-lg font-medium text-white tracking-tight">
                   {image.title}
                 </span>
@@ -110,14 +110,16 @@ function GallerySection() {
               className="relative max-w-5xl w-full max-h-[90vh] rounded-[24px] overflow-hidden bg-[#FFFDF9] border border-[rgba(0,0,0,0.1)] shadow-2xl flex flex-col justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.title}
-                width={1200}
-                height={900}
-                priority
-                className="w-full h-auto max-h-[80vh] object-contain bg-[#050505]"
-              />
+              <div className="relative w-full aspect-[16/10] max-h-[75vh] bg-[#050505]">
+                <Image
+                  src={selectedImage.src}
+                  alt={selectedImage.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  className="object-contain"
+                />
+              </div>
 
               {/* Modal Footer Caption */}
               <div className="p-6 bg-[#FFFDF9] flex items-center justify-between border-t border-[rgba(0,0,0,0.06)]">
