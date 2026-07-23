@@ -30,6 +30,7 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
 
         {/* ── 1. Minimal Callout Banner ───────────────────────────────── */}
         <motion.div
+          id="pricing"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
