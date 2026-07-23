@@ -139,7 +139,7 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-50"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md"
           />
 
           {/* Modal Card */}
@@ -148,7 +148,7 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#FDFBF7] text-[#050505] rounded-3xl p-6 sm:p-8 shadow-2xl border border-black/10 z-50 custom-scrollbar"
+            className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#FDFBF7] text-[#050505] rounded-3xl p-6 sm:p-8 shadow-2xl border border-black/10 custom-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}

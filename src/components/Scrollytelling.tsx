@@ -59,7 +59,8 @@ const FEATURES = [
 export default function Scrollytelling() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeFeatureId, setActiveFeatureId] = useState<string>(FEATURES[0].id);
+  const [progressPercent, setProgressPercent] = useState<number>(0);
   const [isMuted, setIsMuted] = useState(true);
 
   /* Track scroll position */
@@ -75,11 +76,24 @@ export default function Scrollytelling() {
     restDelta: 0.0005,
   });
 
+  /* Low-overhead threshold listener — prevents main-thread re-render lag */
   useEffect(() => {
     return smoothProgress.on("change", (latest) => {
-      setScrollProgress(latest);
+      const feature = FEATURES.find(
+        (f) => latest >= f.scrollStart && latest <= f.scrollEnd
+      ) || FEATURES[0];
+
+      if (feature.id !== activeFeatureId) {
+        setActiveFeatureId(feature.id);
+      }
+
+      const pct = Math.round(latest * 100);
+      setProgressPercent((prev) => (prev !== pct ? pct : prev));
     });
-  }, [smoothProgress]);
+  }, [smoothProgress, activeFeatureId]);
+
+  // GPU accelerated progress width (zero React re-renders)
+  const progressWidth = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
 
   /* Preload sequence / preview images with proper cleanup on unmount */
   useEffect(() => {
@@ -106,10 +120,11 @@ export default function Scrollytelling() {
 
   const toggleMute = useCallback(() => {
     if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
+      const nextMuted = !videoRef.current.muted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
     }
-  }, [isMuted]);
+  }, []);
 
   /* Smooth scroll to feature target */
   const jumpToFeature = (startProgress: number) => {
@@ -119,10 +134,8 @@ export default function Scrollytelling() {
     window.scrollTo({ top, behavior: "smooth" });
   };
 
-  // Determine active feature
-  const activeFeature = FEATURES.find(
-    (f) => scrollProgress >= f.scrollStart && scrollProgress <= f.scrollEnd
-  ) || FEATURES[0];
+  // Determine active feature based on activeFeatureId state
+  const activeFeature = FEATURES.find((f) => f.id === activeFeatureId) || FEATURES[0];
 
   return (
     <section
@@ -259,12 +272,12 @@ export default function Scrollytelling() {
                 <motion.div
                   className="h-full bg-[#A7B7E7] rounded-full"
                   style={{
-                    width: `${scrollProgress * 100}%`,
+                    width: progressWidth,
                   }}
                 />
               </div>
               <span className="text-xs font-mono text-[rgba(253,251,247,0.5)]">
-                {Math.round(scrollProgress * 100)}%
+                {progressPercent}%
               </span>
             </div>
 
