@@ -81,6 +81,26 @@ export default function Scrollytelling() {
     });
   }, [smoothProgress]);
 
+  /* Preload sequence / preview images with proper cleanup on unmount */
+  useEffect(() => {
+    const imagesToPreload = ["/luxspace_room_showcase.png", "/frames/frame-000.jpg"];
+    const loadedImages: HTMLImageElement[] = [];
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      loadedImages.push(img);
+    });
+
+    return () => {
+      loadedImages.forEach((img) => {
+        img.onload = null;
+        img.onerror = null;
+        img.src = "";
+      });
+    };
+  }, []);
+
   // Subtle video scale on scroll
   const mediaScale = useTransform(smoothProgress, [0, 0.5, 1], [1, 1.05, 1.08]);
 
@@ -93,7 +113,7 @@ export default function Scrollytelling() {
 
   /* Smooth scroll to feature target */
   const jumpToFeature = (startProgress: number) => {
-    if (!containerRef.current) return;
+    if (typeof window === "undefined" || !containerRef.current) return;
     const container = containerRef.current;
     const top = container.offsetTop + startProgress * (container.offsetHeight - window.innerHeight);
     window.scrollTo({ top, behavior: "smooth" });
@@ -112,8 +132,8 @@ export default function Scrollytelling() {
       style={{ height: "350vh" }}
       aria-label="Room Architecture Showcase"
     >
-      {/* ── Sticky Fullscreen Viewport ────────────────────────────────── */}
-      <div className="sticky top-0 w-full h-[100dvh] overflow-hidden bg-[#050505]">
+      {/* ── Sticky Fullscreen Viewport (Hardware Accelerated) ───────────── */}
+      <div className="sticky top-0 w-full h-[100dvh] overflow-hidden bg-[#050505] will-change-transform transform-gpu">
 
         {/* ── 1. Fullscreen Background Video (100% Width & Height) ───── */}
         <motion.div

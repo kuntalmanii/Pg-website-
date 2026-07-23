@@ -103,7 +103,9 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -116,7 +118,7 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
         animate={{ y: 0,   opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] }}
         className={cn(
-          "fixed top-4 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2rem)] max-w-5xl",
+          "fixed top-4 left-1/2 z-40 -translate-x-1/2 w-[calc(100%-2rem)] max-w-5xl",
           "rounded-2xl px-5 py-3 flex flex-col",          /* column so bar sits flush at bottom */
           "transition-all duration-300 overflow-hidden",
           scrolled

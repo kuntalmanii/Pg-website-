@@ -9,6 +9,12 @@ interface ScheduleVisitModalProps {
   onClose: () => void;
 }
 
+const PHONE_REGEX = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+
+const sanitizeInput = (str: string): string => {
+  return str.replace(/<[^>]*>?/gm, '').trim();
+};
+
 export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitModalProps) {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -18,20 +24,26 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
     visitDate: '',
   });
 
+  const [honeypot, setHoneypot] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   /* Prevent background scrolling when modal is open */
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
     return () => {
-      document.body.style.overflow = '';
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+      }
     };
   }, [isOpen]);
 
   /* Handle Escape key */
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || typeof window === 'undefined') return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
@@ -45,6 +57,8 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
       const timer = setTimeout(() => {
         setIsSuccess(false);
         setIsSubmitting(false);
+        setPhoneError('');
+        setHoneypot('');
         setFormData({
           fullName: '',
           phone: '',
@@ -59,18 +73,58 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 1. Rate Limiting Guard: Prevent double-click or rapid re-submission
+    if (isSubmitting) return;
+
+    // 2. Honeypot Check: Silently reject automated bot submissions
+    if (honeypot.trim() !== '') {
+      return;
+    }
+
+    // 3. Input Sanitization & Validation
+    const sanitizedName = sanitizeInput(formData.fullName);
+    const sanitizedPhone = sanitizeInput(formData.phone);
+
+    if (!sanitizedName) return;
+
+    const digitsOnly = sanitizedPhone.replace(/\D/g, '');
+    if (!PHONE_REGEX.test(sanitizedPhone) || digitsOnly.length < 7) {
+      setPhoneError('Please enter a valid phone number.');
+      return;
+    }
+
+    setPhoneError('');
     setIsSubmitting(true);
 
-    // Simulate submission delay
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    try {
+      // Construct formatted WhatsApp lead message
+      const targetWhatsAppNumber = "918882813740"; // Luxspace PG WhatsApp contact
+      const messageText = `Hi Luxspace PG! I would like to schedule a visit.
 
-    setIsSubmitting(false);
-    setIsSuccess(true);
+*Name:* ${sanitizedName}
+*Phone:* ${sanitizedPhone}
+*Occupancy:* ${formData.occupancy}
+*Room Type:* ${formData.roomType} Room
+*Preferred Date:* ${formData.visitDate || 'Not specified'}`;
 
-    setTimeout(() => {
-      setIsSuccess(false);
-      onClose();
-    }, 2500);
+      const whatsappUrl = `https://wa.me/${targetWhatsAppNumber}?text=${encodeURIComponent(messageText)}`;
+
+      // Open WhatsApp pre-filled chat in a new secure window
+      if (typeof window !== 'undefined') {
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setIsSuccess(true);
+
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+      }, 2500);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -78,14 +132,14 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[999]"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-50"
           />
 
           {/* Modal Card */}
@@ -94,7 +148,7 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#FDFBF7] text-[#050505] rounded-3xl p-6 sm:p-8 shadow-2xl border border-black/10 z-[1000] custom-scrollbar"
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#FDFBF7] text-[#050505] rounded-3xl p-6 sm:p-8 shadow-2xl border border-black/10 z-50 custom-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -126,14 +180,28 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Honeypot Field for Bot Spam Prevention */}
+                  <input
+                    type="text"
+                    name="website"
+                    id="website-hp"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    style={{ display: 'none' }}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                  />
+
                   {/* Full Name */}
                   <div>
-                    <label className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
+                    <label htmlFor="fullName" className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5 cursor-pointer">
                       Full Name *
                     </label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
                       <input
+                        id="fullName"
                         type="text"
                         required
                         placeholder="e.g. Arjun Mehra"
@@ -147,33 +215,44 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
 
                   {/* Phone Number */}
                   <div>
-                    <label className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
+                    <label htmlFor="phone" className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5 cursor-pointer">
                       Phone Number *
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
                       <input
+                        id="phone"
                         type="tel"
                         required
-                        placeholder="+91 98765 43210"
+                        placeholder="+91 88828 13740"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        onChange={(e) => {
+                          setFormData({ ...formData, phone: e.target.value });
+                          if (phoneError) setPhoneError('');
+                        }}
                         disabled={isSubmitting}
-                        className="w-full bg-black/5 border border-black/10 rounded-xl pl-10 pr-4 py-3 text-sm text-black placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#A7B7E7] transition-all"
+                        className={`w-full bg-black/5 border ${
+                          phoneError ? 'border-red-500 focus:ring-red-400' : 'border-black/10 focus:ring-[#A7B7E7]'
+                        } rounded-xl pl-10 pr-4 py-3 text-sm text-black placeholder:text-black/30 focus:outline-none focus:ring-2 transition-all`}
                       />
                     </div>
+                    {phoneError && (
+                      <p className="mt-1 text-xs text-red-500 font-medium">{phoneError}</p>
+                    )}
                   </div>
 
                   {/* Occupancy Type */}
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
+                  <fieldset>
+                    <legend className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
                       Occupancy Type *
-                    </label>
+                    </legend>
                     <div className="grid grid-cols-2 gap-2">
                       {['Boys', 'Girls'].map((type) => (
                         <button
                           key={type}
                           type="button"
+                          aria-pressed={formData.occupancy === type}
+                          aria-label={`Select ${type} occupancy`}
                           onClick={() => setFormData({ ...formData, occupancy: type })}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                             formData.occupancy === type
@@ -185,18 +264,20 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
                         </button>
                       ))}
                     </div>
-                  </div>
+                  </fieldset>
 
                   {/* Room Preference */}
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
+                  <fieldset>
+                    <legend className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
                       Room Preference *
-                    </label>
+                    </legend>
                     <div className="grid grid-cols-2 gap-2">
                       {['Single', 'Sharing'].map((room) => (
                         <button
                           key={room}
                           type="button"
+                          aria-pressed={formData.roomType === room}
+                          aria-label={`Select ${room} room`}
                           onClick={() => setFormData({ ...formData, roomType: room })}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                             formData.roomType === room
@@ -208,16 +289,17 @@ export default function ScheduleVisitModal({ isOpen, onClose }: ScheduleVisitMod
                         </button>
                       ))}
                     </div>
-                  </div>
+                  </fieldset>
 
                   {/* Preferred Visit Date */}
                   <div>
-                    <label className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5">
+                    <label htmlFor="visitDate" className="block text-[10px] font-bold tracking-wider uppercase text-black/60 mb-1.5 cursor-pointer">
                       Preferred Visit Date *
                     </label>
                     <div className="relative">
                       <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
                       <input
+                        id="visitDate"
                         type="date"
                         required
                         min={today}

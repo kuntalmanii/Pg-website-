@@ -79,7 +79,7 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
 
             <motion.a
               id="footer-whatsapp-btn"
-              href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20Luxspace%20PG."
+              href="https://wa.me/918882813740?text=Hi%2C%20I%27m%20interested%20in%20Luxspace%20PG."
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
@@ -149,9 +149,9 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
             </span>
             <ul className="flex flex-col gap-2 text-xs text-[rgba(253,251,247,0.6)]">
               <li>
-                <a href="tel:+919876543210" className="inline-flex items-center gap-2 hover:text-[#FDFBF7] transition-colors">
+                <a href="tel:+918882813740" className="inline-flex items-center gap-2 hover:text-[#FDFBF7] transition-colors">
                   <Phone size={13} className="text-[#A7B7E7]" />
-                  +91 98765 43210
+                  +91 88828 13740
                 </a>
               </li>
               <li>

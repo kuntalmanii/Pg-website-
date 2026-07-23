@@ -113,9 +113,11 @@ function CopyAddressButton() {
 
   const handleCopy = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(FULL_ADDRESS);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(FULL_ADDRESS);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2200);
+      }
     } catch {
       /* fallback — silently fail */
     }
