@@ -230,7 +230,7 @@ export default function Scrollytelling() {
           <div className="flex items-center justify-between max-w-6xl mx-auto w-full pt-4 border-t border-white/15 gap-4 flex-wrap">
 
             {/* Apple Floating Dock */}
-            <div className="flex items-center gap-1.5 p-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl">
+            <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl max-w-full overflow-x-auto">
               {FEATURES.map((feature) => {
                 const isActive = activeFeature.id === feature.id;
                 const Icon = feature.icon;
@@ -240,13 +240,13 @@ export default function Scrollytelling() {
                     key={feature.id}
                     type="button"
                     onClick={() => jumpToFeature(feature.scrollStart)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-300 cursor-pointer ${
                       isActive
                         ? "bg-[#FDFBF7] text-[#050505] shadow-lg scale-105"
                         : "text-[rgba(253,251,247,0.6)] hover:text-[#FDFBF7] hover:bg-white/10"
                     }`}
                   >
-                    <Icon size={14} className={isActive ? "text-[#050505]" : "text-[rgba(253,251,247,0.5)]"} />
+                    <Icon size={13} className={isActive ? "text-[#050505]" : "text-[rgba(253,251,247,0.5)]"} />
                     <span>{feature.label}</span>
                   </button>
                 );

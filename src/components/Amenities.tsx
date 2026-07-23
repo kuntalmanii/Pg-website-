@@ -37,7 +37,7 @@ const AMENITIES: BentoItem[] = [
     badge: "In-House Kitchen",
     title: "3× Daily Meals Included",
     desc: "Wholesome home-style breakfast, lunch & dinner prepared fresh daily by our professional kitchen staff.",
-    span: "col-span-2 row-span-2 md:col-span-2 md:row-span-2",
+    span: "col-span-1 sm:col-span-2 sm:row-span-2 md:col-span-2 md:row-span-2",
     dark: true,
   },
   {
@@ -47,7 +47,7 @@ const AMENITIES: BentoItem[] = [
     badge: "100 Mbps Dedicated",
     title: "High-Speed Wi-Fi",
     desc: "Low-latency fibre connection across all floors with zero speed throttling.",
-    span: "col-span-2 md:col-span-1",
+    span: "col-span-1 sm:col-span-1 md:col-span-1",
     dark: false,
     accent: true,
   },
@@ -58,7 +58,7 @@ const AMENITIES: BentoItem[] = [
     badge: "Refreshed Daily",
     title: "Daily Housekeeping",
     desc: "Every room is professionally cleaned & trash cleared every morning.",
-    span: "col-span-2 md:col-span-1",
+    span: "col-span-1 sm:col-span-1 md:col-span-1",
     dark: true,
   },
   {
@@ -68,7 +68,7 @@ const AMENITIES: BentoItem[] = [
     badge: "Recreation Lounge",
     title: "Pool Table & Chill Zone",
     desc: "Unwind after classes with our full-size pool table, board games & lounge seating.",
-    span: "col-span-2 md:col-span-2",
+    span: "col-span-1 sm:col-span-2 md:col-span-2",
     dark: false,
   },
   {
@@ -78,7 +78,7 @@ const AMENITIES: BentoItem[] = [
     badge: "24/7 Active Security",
     title: "CCTV & On-Site Guard",
     desc: "32 HD cameras covering entry points + round-the-clock security guard.",
-    span: "col-span-2 md:col-span-1",
+    span: "col-span-1 sm:col-span-1 md:col-span-1",
     dark: true,
   },
   {
@@ -88,7 +88,7 @@ const AMENITIES: BentoItem[] = [
     badge: "Rooftop Space",
     title: "Terrace Garden",
     desc: "Curated outdoor green space perfect for sunset study sessions and fresh air.",
-    span: "col-span-2 md:col-span-1",
+    span: "col-span-1 sm:col-span-1 md:col-span-1",
     dark: false,
     accent: true,
   },
@@ -292,7 +292,7 @@ export default function Amenities() {
           variants={CONTAINER}
           initial="hidden"
           animate={inView ? "show" : "hidden"}
-          className="grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(200px,auto)] gap-4 md:gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5"
         >
           {AMENITIES.map((item) => (
             <BentoCard key={item.id} item={item} />

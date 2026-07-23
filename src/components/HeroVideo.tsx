@@ -69,7 +69,7 @@ export default function HeroVideo({ onOpen, onSchedule }: HeroVideoProps) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1,  y: 0   }}
         transition={{ delay: 0.7, duration: 0.55, ease: EASE }}
-        className="absolute top-8 right-6 md:right-10 flex items-center gap-2 px-3.5 py-2 rounded-full"
+        className="absolute top-20 right-4 sm:top-8 sm:right-6 md:right-10 flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full z-20"
         style={{
           background:     "rgba(5,5,5,0.55)",
           border:         "1px solid rgba(167,183,231,0.22)",

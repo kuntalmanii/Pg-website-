@@ -424,7 +424,7 @@ export default function LocationSection() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {NEARBY.map(({ id, icon: Icon, category, label, detail, time, fill, accent, url }, i) => (
                   <motion.a
                     key={id}
