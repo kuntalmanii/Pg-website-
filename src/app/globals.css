@@ -4,12 +4,18 @@
 
 /* ─── Luxspace Design Tokens ─────────────────────────────────────────────── */
 :root {
-  /* Brand Palette */
-  --beige-light:    #FDFBF7;
-  --beige-card:     #F4EFEA;
-  --twilight-haze:  #A7B7E7;
-  --dark-void:      #050505;
-  --sony-blue:      #0050FF;
+  /* Luxury Hospitality Palette */
+  --beige-light:    #FAF6F0; /* Warm Ivory */
+  --beige-card:     #F3ECE2; /* Soft Beige */
+  --stone-white:    #F7F4EF; /* Stone White */
+  --dark-void:      #24211E; /* Warm Black */
+  --warm-obsidian:  #1C1A18; /* Warm Obsidian Charcoal */
+  --champagne-gold: #D4B886; /* Champagne Gold */
+  --twilight-haze:  #9C95A6; /* Twilight Haze */
+  --sony-blue:      #D4B886; /* Replaced electric blue with Champagne Gold */
+  --muted-olive:    #7F826B; /* Muted Olive */
+  --graphite:       #4A4540; /* Graphite */
+  --slate-warm:     #736B63; /* Slate */
 
   /* Typography scale */
   --text-xs:   0.75rem;
@@ -32,24 +38,28 @@
   --radius-full: 9999px;
 
   /* Glass */
-  --glass-bg:          rgba(253, 251, 247, 0.08);
-  --glass-border:      rgba(167, 183, 231, 0.18);
+  --glass-bg:          rgba(250, 246, 240, 0.12);
+  --glass-border:      rgba(212, 184, 134, 0.22);
   --glass-blur:        blur(18px);
-  --glass-highlight:   inset 0 1px 0 0 rgba(255, 255, 255, 0.10);
+  --glass-highlight:   inset 0 1px 0 0 rgba(255, 252, 248, 0.15);
 
   /* Noise texture — inline SVG, reused across utilities */
   --noise-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 
   /* Glow radii */
-  --glow-twilight-color: rgba(167, 183, 231, 0.15);
-  --glow-blue-color:     rgba(0,  80,  255, 0.10);
+  --glow-twilight-color: rgba(156, 149, 166, 0.18);
+  --glow-blue-color:     rgba(212, 184, 134, 0.16);
 }
 
-/* ─── Smooth Scroll & Base Reset ─────────────────────────────────────────── */
+/* ─── Smooth Scroll & Mobile Reset ───────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 *, *::before, *::after {
@@ -63,6 +73,15 @@ body {
   color: var(--dark-void);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   line-height: 1.6;
+  overflow-x: hidden;
+  max-width: 100vw;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ─── Utility Classes ─────────────────────────────────────────────────────── */
@@ -89,32 +108,32 @@ body {
 
   /* Light glass (for dark backgrounds — hero, scrollytelling) */
   .glass {
-    background:            rgba(253, 251, 247, 0.08);
-    border:                1px solid rgba(167, 183, 231, 0.20);
+    background:            rgba(250, 246, 240, 0.08);
+    border:                1px solid rgba(212, 184, 134, 0.22);
     backdrop-filter:       blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
     box-shadow:            var(--glass-highlight),
-                           0 4px 24px rgba(0, 0, 0, 0.12);
+                           0 4px 24px rgba(28, 26, 24, 0.25);
   }
 
   /* Dark glass (for light backgrounds — modals, cards on beige) */
   .glass-dark {
-    background:            rgba(5, 5, 5, 0.55);
-    border:                1px solid rgba(255, 255, 255, 0.07);
+    background:            rgba(28, 26, 24, 0.75);
+    border:                1px solid rgba(212, 184, 134, 0.20);
     backdrop-filter:       blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
-    box-shadow:            inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-                           0 8px 32px rgba(0, 0, 0, 0.40);
+    box-shadow:            inset 0 1px 0 0 rgba(255, 252, 248, 0.08),
+                           0 8px 32px rgba(28, 26, 24, 0.40);
   }
 
   /* Beige glass (lighter panels on beige sections) */
   .glass-light {
-    background:            rgba(253, 251, 247, 0.65);
-    border:                1px solid rgba(167, 183, 231, 0.22);
+    background:            rgba(250, 246, 240, 0.72);
+    border:                1px solid rgba(212, 184, 134, 0.25);
     backdrop-filter:       blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    box-shadow:            inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
-                           0 4px 20px rgba(167, 183, 231, 0.12);
+    box-shadow:            inset 0 1px 0 0 rgba(255, 252, 248, 0.65),
+                           0 4px 20px rgba(197, 160, 89, 0.12);
   }
 
   /* ── Noise texture overlay ───────────────────────────────────────────── */
@@ -205,8 +224,8 @@ body {
     background:    conic-gradient(
                      from var(--border-angle, 0deg),
                      transparent 0%,
-                     #A7B7E7     20%,
-                     #0050FF     40%,
+                     #D4B886     20%,
+                     #9C95A6     40%,
                      transparent 60%
                    );
     -webkit-mask:
@@ -238,17 +257,51 @@ body {
     font-weight: 500;
   }
 
+  /* ── 60 FPS GPU Acceleration & Luxury Motion ─────────────────────────── */
+  .smooth-gpu {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .lux-hover-lift {
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .lux-image-zoom {
+    transform: translateZ(0);
+    will-change: transform;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   /* ── Transitions ─────────────────────────────────────────────────────── */
   .transition-smooth {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+/* ─── Custom Scrollbar Utility ────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(36, 33, 30, 0.05);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 184, 134, 0.5);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 184, 134, 0.8);
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--beige-card); }
 ::-webkit-scrollbar-thumb {
-  background: var(--twilight-haze);
+  background: var(--champagne-gold);
   border-radius: var(--radius-full);
 }
 
@@ -284,3 +337,4 @@ body {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
 }
+

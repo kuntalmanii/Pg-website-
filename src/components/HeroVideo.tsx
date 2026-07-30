@@ -1,16 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ChevronDown, Star, MapPin, Utensils, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 /* ── Animation helpers ───────────────────────────────────────────────────── */
-const EASE = [0.4, 0, 0.2, 1] as [number, number, number, number];
+const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 22 },
+  initial:    { opacity: 0, y: 24 },
   animate:    { opacity: 1, y: 0  },
-  transition: { duration: 0.72, ease: EASE, delay },
+  transition: { duration: 0.8, ease: EASE, delay },
 });
 
 interface HeroVideoProps {
@@ -20,158 +20,144 @@ interface HeroVideoProps {
 
 export default function HeroVideo({ onOpen, onSchedule }: HeroVideoProps) {
   const handleOpen = onOpen || onSchedule || (() => {});
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* ── Parallax Scroll Motion Values ───────────────────────────────────────── */
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.14]);
+  const contentY   = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
 
   return (
     <section
+      ref={containerRef}
       id="hero"
-      className="relative w-full h-[100dvh] overflow-hidden bg-[#050505]"
+      className="relative w-full h-[100dvh] overflow-hidden bg-[#1C1A18] scroll-mt-24"
       aria-label="Hero section"
     >
-      {/* ── Ambient Video ─────────────────────────────────────────────── */}
-      <video
-        ref={videoRef}
-        src="/hero-banner.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        poster="/frames/frame-000.jpg"
-        className="absolute inset-0 w-full h-full object-cover opacity-70"
-        aria-hidden="true"
-      />
+      {/* ── Parallax Video Background ──────────────────────────────────── */}
+      <motion.div
+        style={{ scale: videoScale }}
+        className="absolute inset-0 w-full h-full origin-center pointer-events-none"
+      >
+        <video
+          ref={videoRef}
+          src="/hero-banner.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/frames/frame-000.jpg"
+          className="w-full h-full object-cover opacity-65"
+          aria-hidden="true"
+        />
+      </motion.div>
 
-      {/* ── Layered Gradient Overlays ──────────────────────────────────── */}
-      {/* Bottom mask — bleeds seamlessly into #050505 canvas section */}
+      {/* ── Layered Ambient Gradient Masks ─────────────────────────────── */}
+      {/* Bottom seamless blend into canvas */}
       <div
-        className="absolute bottom-0 inset-x-0 h-[55%] pointer-events-none"
+        className="absolute bottom-0 inset-x-0 h-[60%] pointer-events-none"
         style={{
-          background: "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.85) 30%, rgba(5,5,5,0.4) 60%, transparent 100%)",
+          background: "linear-gradient(to top, #1C1A18 0%, rgba(28,26,24,0.85) 35%, rgba(28,26,24,0.4) 65%, transparent 100%)",
         }}
         aria-hidden
       />
-      {/* Left vignette */}
+      {/* Left vignette for reading comfort */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(to right, rgba(5,5,5,0.6) 0%, transparent 55%)" }}
+        style={{ background: "linear-gradient(to right, rgba(28,26,24,0.65) 0%, transparent 60%)" }}
         aria-hidden
       />
-      {/* Top bar for navbar legibility */}
+      {/* Top gradient for floating navbar clarity */}
       <div
-        className="absolute top-0 inset-x-0 h-36 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, rgba(5,5,5,0.45) 0%, transparent 100%)" }}
+        className="absolute top-0 inset-x-0 h-40 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, rgba(28,26,24,0.5) 0%, transparent 100%)" }}
         aria-hidden
       />
 
-      {/* ── Floating Location Badge — top-right ───────────────────────── */}
+      {/* ── Floating Live Status Pill — Top Right ───────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1,  y: 0   }}
-        transition={{ delay: 0.7, duration: 0.55, ease: EASE }}
-        className="absolute top-20 right-4 sm:top-8 sm:right-6 md:right-10 flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full z-20"
+        transition={{ delay: 0.7, duration: 0.6, ease: EASE }}
+      className="hidden sm:flex absolute top-10 right-8 md:right-12 items-center gap-2.5 px-4 py-2 rounded-full z-20 shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
         style={{
-          background:     "rgba(5,5,5,0.55)",
-          border:         "1px solid rgba(167,183,231,0.22)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
+          background:           "rgba(28,26,24,0.65)",
+          backdropFilter:       "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
         }}
         aria-label="Location: Sector 126, Noida"
       >
         {/* Live status dot */}
         <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
-          {/* Ping ring */}
           <motion.span
             animate={{ scale: [1, 2.2], opacity: [0.7, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-            className="absolute inline-flex h-full w-full rounded-full"
-            style={{ background: "#0050FF" }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+            className="absolute inline-flex h-full w-full rounded-full bg-[#D4B886]"
           />
-          {/* Solid core */}
-          <span
-            className="relative inline-flex h-2 w-2 rounded-full"
-            style={{ background: "#0050FF" }}
-          />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-[#D4B886]" />
         </span>
 
-        <span
-          className="text-[10px] font-bold tracking-[0.18em] uppercase"
-          style={{ color: "rgba(253,251,247,0.75)" }}
-        >
+        <span className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#F7F4EF]/85">
           Sector 126 &bull; Noida
         </span>
       </motion.div>
 
-      {/* ── Content ───────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 flex flex-col justify-end pb-28 md:pb-32 px-6 md:px-16 max-w-6xl">
-
+      {/* ── Main Hero Content ──────────────────────────────────────────── */}
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="relative z-10 w-full h-full flex flex-col justify-end pb-12 sm:pb-16 md:pb-20 px-6 sm:px-10 md:px-16 lg:px-20 max-w-6xl mx-auto"
+      >
         {/* Location pill */}
         <motion.div {...fadeUp(0.1)} className="mb-5 flex items-center gap-2">
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-medium tracking-[0.18em] uppercase shadow-[0_4px_24px_rgba(212,184,134,0.22)]"
             style={{
-              background:     "rgba(167,183,231,0.14)",
-              border:         "1px solid rgba(167,183,231,0.28)",
-              color:          "#A7B7E7",
-              backdropFilter: "blur(10px)",
+              background:     "rgba(212,184,134,0.14)",
+              color:          "#D4B886",
+              backdropFilter: "blur(16px)",
             }}
           >
-            {/* Subtle pin dot */}
-            <span className="w-1.5 h-1.5 rounded-full bg-[#A7B7E7] shrink-0" aria-hidden />
-            Near Amity University · 2 min walk
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4B886] shrink-0" aria-hidden />
+            Near Amity University Gate 2 · 2 min walk
           </span>
         </motion.div>
 
-        {/* Main headline */}
+        {/* Headline */}
         <motion.h1
           {...fadeUp(0.22)}
-          className="text-[clamp(2.8rem,7vw,6rem)] font-black leading-[1.02] tracking-[-0.03em] text-[#FDFBF7]"
+          className="text-[clamp(2.6rem,6.8vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.03em] text-[#F7F4EF]"
         >
-          Live Smart.
+          Unrivaled Comfort.
           <br />
           <span
             style={{
-              background:           "linear-gradient(95deg, #FDFBF7 30%, #A7B7E7 100%)",
+              background:           "linear-gradient(95deg, #F7F4EF 30%, #D4B886 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor:  "transparent",
             }}
           >
-            Live Comfortable.
+            Exceptional Living.
           </span>
         </motion.h1>
 
         {/* Sub-headline */}
         <motion.p
-          {...fadeUp(0.38)}
-          className="mt-5 max-w-xl text-[clamp(0.95rem,1.8vw,1.15rem)] leading-relaxed text-[rgba(253,251,247,0.62)] font-medium"
+          {...fadeUp(0.35)}
+          className="mt-5 max-w-xl md:max-w-2xl text-[clamp(0.95rem,1.7vw,1.15rem)] leading-relaxed text-[#B5ACA1] font-normal"
         >
-          Premium paying guest accommodation — minutes from{" "}
-          <span className="text-[#A7B7E7] font-semibold">Amity University</span>,
-          with high-speed Wi-Fi, three nutritious meals, and spaces designed
-          for how you actually live.
+          Luxury student residence engineered for peace of mind — featuring 3 chef-prepared meals, high-speed Wi-Fi, daily housekeeping, and study-focused spaces minutes from{" "}
+          <span className="text-[#D4B886] font-medium">Amity University</span>.
         </motion.p>
 
-        {/* CTA row */}
-        <motion.div {...fadeUp(0.52)} className="mt-8 flex items-center gap-4 flex-wrap">
-          <a
-            id="hero-cta-tour"
-            href="#scrollytelling"
-            className="group inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-[#050505] transition-all duration-300"
-            style={{
-              background: "#A7B7E7",
-              boxShadow:  "0 6px 28px rgba(167,183,231,0.4)",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.boxShadow = "0 10px 36px rgba(167,183,231,0.62)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.boxShadow = "0 6px 28px rgba(167,183,231,0.4)")
-            }
-          >
-            Explore the Room
-            <ChevronDown size={15} className="group-hover:translate-y-0.5 transition-transform duration-200" />
-          </a>
-
+        {/* CTA Row */}
+        <motion.div {...fadeUp(0.48)} className="mt-8 md:mt-10 flex items-center gap-4 sm:gap-5 flex-wrap">
           <button
             id="hero-cta-schedule"
             type="button"
@@ -179,63 +165,99 @@ export default function HeroVideo({ onOpen, onSchedule }: HeroVideoProps) {
               e.preventDefault();
               handleOpen();
             }}
-            className="inline-flex items-center gap-1 px-6 py-3 rounded-2xl text-sm font-semibold text-[rgba(253,251,247,0.75)] hover:text-[#FDFBF7] transition-colors duration-200 cursor-pointer"
-            style={{
-              border:         "1px solid rgba(253,251,247,0.18)",
-              backdropFilter: "blur(8px)",
-            }}
+            className="group inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-xs sm:text-sm font-semibold tracking-[0.02em] text-[#1C1A18] transition-all duration-300 cursor-pointer shadow-[0_8px_32px_rgba(212,184,134,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
+            style={{ background: "#D4B886" }}
+            onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 12px 40px rgba(212,184,134,0.6)")}
+            onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 8px 32px rgba(212,184,134,0.4)")}
           >
-            Schedule a Visit
+            Schedule a Private Tour
+            <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
           </button>
-        </motion.div>
-      </div>
 
-      {/* ── Scroll to Discover — bottom-center ────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.65, ease: EASE }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        aria-hidden
-      >
-        <span
-          className="text-[9px] font-bold tracking-[0.28em] uppercase"
-          style={{ color: "rgba(253,251,247,0.32)" }}
-        >
-          Scroll to Discover
-        </span>
-
-        {/* Triple stacked animated chevrons */}
-        {[0, 0.18, 0.36].map((delay, i) => (
-          <motion.div
-            key={i}
-            animate={{ y: [0, 5, 0], opacity: [0.25, 0.8, 0.25] }}
-            transition={{
-              repeat:   Infinity,
-              duration: 1.5,
-              ease:     "easeInOut",
-              delay,
+          <a
+            id="hero-cta-tour"
+            href="#scrollytelling"
+            className="inline-flex items-center gap-2 px-7 py-4 rounded-full text-xs sm:text-sm font-medium tracking-[0.02em] text-[#F7F4EF] hover:bg-white/18 transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
+            style={{
+              background:     "rgba(255,255,255,0.1)",
+              backdropFilter: "blur(16px)",
+              boxShadow:      "0 4px 24px rgba(0,0,0,0.2)",
             }}
           >
-            <ChevronDown
-              size={14}
-              style={{ color: "#A7B7E7" }}
-              strokeWidth={2.5}
-            />
-          </motion.div>
-        ))}
+            Explore Room Architecture
+            <ChevronDown size={15} />
+          </a>
+        </motion.div>
+
+        {/* ── High-Trust Indicator Bar (Communicating ₹20k+/month Value) ───── */}
+        <motion.div
+          {...fadeUp(0.6)}
+          className="mt-12 pt-6 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
+        >
+          {/* Trust Stat 1 */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-[#D4B886]/16 text-[#D4B886]">
+              <Star size={18} fill="#D4B886" strokeWidth={1} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#F7F4EF]">4.9 / 5 Rating</p>
+              <p className="text-[11px] text-[#B5ACA1]">50+ Resident Reviews</p>
+            </div>
+          </div>
+
+          {/* Trust Stat 2 */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-[#D4B886]/16 text-[#D4B886]">
+              <MapPin size={18} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#F7F4EF]">2 Min Walk</p>
+              <p className="text-[11px] text-[#B5ACA1]">Amity Gate 2 Noida</p>
+            </div>
+          </div>
+
+          {/* Trust Stat 3 — hidden on small mobile, visible md+ */}
+          <div className="hidden md:flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-[#D4B886]/16 text-[#D4B886]">
+              <Utensils size={18} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#F7F4EF]">3 Chef Meals</p>
+              <p className="text-[11px] text-[#B5ACA1]">Fresh & Hygienic</p>
+            </div>
+          </div>
+
+          {/* Trust Stat 4 — hidden on small mobile, visible md+ */}
+          <div className="hidden md:flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-[#D4B886]/16 text-[#D4B886]">
+              <ShieldCheck size={18} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#F7F4EF]">24/7 Security</p>
+              <p className="text-[11px] text-[#B5ACA1]">Biometric Access</p>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* ── Grain texture overlay ──────────────────────────────────────── */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:  `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize:   "180px",
-        }}
+      {/* ── Scroll to Discover Indicator — Bottom Right ──────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.6 }}
+        className="hidden lg:flex absolute bottom-8 right-12 z-20 flex-col items-center gap-2 pointer-events-none"
         aria-hidden
-      />
+      >
+        <span className="text-[9px] font-medium tracking-[0.24em] uppercase text-[#B5ACA1]/60">
+          Scroll
+        </span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+        >
+          <ChevronDown size={14} className="text-[#D4B886]" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

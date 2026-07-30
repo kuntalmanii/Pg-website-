@@ -9,7 +9,7 @@ import {
   useSpring,
   useScroll,
 } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -21,9 +21,11 @@ interface NavbarProps {
 }
 
 const NAV_LINKS = [
-  { label: "Amenities", href: "#amenities" },
-  { label: "Location",  href: "#location"  },
-  { label: "Pricing",   href: "#pricing"   },
+  { label: "Residences", href: "#rooms" },
+  { label: "Amenities",  href: "#amenities" },
+  { label: "Location",   href: "#location" },
+  { label: "Gallery",    href: "#gallery" },
+  { label: "Pricing",    href: "#pricing" },
 ];
 
 /* ── Magnetic Button ─────────────────────────────────────────────────────── */
@@ -76,39 +78,60 @@ function MagneticButton({
       }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.03, boxShadow: "0 8px 28px rgba(212,184,134,0.5)" }}
       whileTap={{ scale: 0.96 }}
       style={{ x: springX, y: springY, rotateX, rotateY, transformPerspective: 600 }}
       className={cn(
-        "hidden md:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold select-none cursor-pointer",
-        "backdrop-blur-[14px] bg-[rgba(167,183,231,0.18)] border border-[rgba(167,183,231,0.35)]",
-        "text-dark-void hover:bg-[rgba(167,183,231,0.32)] transition-colors duration-200",
-        "shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]",
+        "hidden md:flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-[0.02em] select-none cursor-pointer",
+        "bg-[#D4B886] text-[#1C1A18] hover:bg-[#C5A059] transition-all duration-300",
+        "shadow-[0_4px_20px_rgba(212,184,134,0.35)]",
         className
       )}
     >
       {children}
+      <ArrowUpRight size={15} className="shrink-0" />
     </motion.button>
   );
 }
 
 /* ── Main Navbar ─────────────────────────────────────────────────────────── */
 export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
-  const handleOpen = onOpen || onSchedule || (() => {});
+  const handleOpen = onOpen || onSchedule || (() => { });
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
 
   /* Scroll progress for the indicator bar */
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* Lock body scroll when mobile menu is open */
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  /* Keyboard listener: close mobile menu on Escape key */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
 
   return (
     <>
@@ -118,45 +141,50 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
         animate={{ y: 0,   opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] }}
         className={cn(
-          "fixed top-4 left-1/2 z-40 -translate-x-1/2 w-[calc(100%-2rem)] max-w-5xl",
-          "rounded-2xl px-5 py-3 flex flex-col",          /* column so bar sits flush at bottom */
+          "fixed top-4 sm:top-5 left-1/2 z-40 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-6xl",
+          "rounded-full px-7 py-3.5 sm:px-9 sm:py-4 flex flex-col",          /* column so bar sits flush at bottom */
           "transition-all duration-300 overflow-hidden",
           scrolled
-            ? "backdrop-blur-[18px] bg-[rgba(253,251,247,0.1)] border border-[rgba(167,183,231,0.2)] shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
-            : "backdrop-blur-[12px] bg-[rgba(253,251,247,0.06)] border border-[rgba(167,183,231,0.12)]"
+            ? "backdrop-blur-2xl bg-[rgba(250,246,240,0.88)] shadow-[0_12px_40px_rgba(28,26,24,0.08)]"
+            : "backdrop-blur-xl bg-[rgba(250,246,240,0.72)] shadow-[0_8px_28px_rgba(28,26,24,0.04)]"
         )}
       >
         {/* Inner row */}
         <div className="flex items-center justify-between w-full">
           {/* Brand */}
           <a
-            href="/"
-            className="text-[1.45rem] font-black tracking-[-0.04em] text-dark-void select-none"
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="text-[1.4rem] sm:text-[1.5rem] font-bold tracking-[-0.035em] text-[#24211E] select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
-            LUX<span className="text-[#A7B7E7]">SPACE</span>
+            LUX<span className="text-[#D4B886]">SPACE</span>
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7" aria-label="Primary navigation">
+          <nav className="hidden md:flex items-center gap-8 lg:gap-10" aria-label="Primary navigation">
             {NAV_LINKS.map(({ label, href }) => (
               <a
                 key={label}
                 href={href}
                 className={cn(
-                  "text-sm font-medium text-dark-void/70 hover:text-dark-void",
-                  "transition-colors duration-200 relative group"
+                  "text-xs sm:text-sm font-medium tracking-[0.015em] text-[#4A4540] hover:text-[#24211E]",
+                  "transition-colors duration-200 relative group rounded-md p-1",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
                 )}
               >
                 {label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#A7B7E7] group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#D4B886] group-hover:w-full transition-all duration-300" />
               </a>
             ))}
           </nav>
 
           {/* CTA + Hamburger */}
           <div className="flex items-center gap-3">
-            <MagneticButton onClick={handleOpen}>
+            <MagneticButton onClick={handleOpen} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]">
               Schedule Visit
             </MagneticButton>
 
@@ -164,9 +192,11 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
             <button
               id="mobile-menu-btn"
               type="button"
-              className="md:hidden p-1.5 text-dark-void/80 hover:text-dark-void transition-colors cursor-pointer"
+              className="md:hidden p-1.5 text-[#24211E]/80 hover:text-[#24211E] transition-colors cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -176,10 +206,10 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
         {/* ── Scroll Progress Bar — flush bottom of navbar ─────────────── */}
         <motion.div
           aria-hidden
-          className="absolute bottom-0 left-0 right-0 h-[1px] origin-left"
+          className="absolute bottom-0 left-0 right-0 h-[1.5px] origin-left"
           style={{
             scaleX,
-            background: "linear-gradient(90deg, #A7B7E7, #0050FF)",
+            background: "linear-gradient(90deg, #D4B886, #9C95A6)",
             transformOrigin: "left",
           }}
         />
@@ -190,15 +220,16 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
         {menuOpen && (
           <motion.div
             key="mobile-menu"
+            id="mobile-menu"
             initial={{ opacity: 0, y: -8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0,  scale: 1 }}
             exit={{   opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
             className={cn(
-              "fixed top-[4.5rem] left-1/2 z-40 -translate-x-1/2",
-              "w-[calc(100%-2rem)] max-w-sm rounded-2xl p-5",
-              "backdrop-blur-[18px] bg-[rgba(253,251,247,0.92)] border border-[rgba(167,183,231,0.25)]",
-              "shadow-[0_12px_40px_rgba(0,0,0,0.1)] flex flex-col gap-3"
+              "fixed top-[5.2rem] left-1/2 z-40 -translate-x-1/2",
+              "w-[calc(100%-2.5rem)] max-w-sm rounded-3xl p-6.5",
+              "backdrop-blur-2xl bg-[rgba(250,246,240,0.96)]",
+              "shadow-[0_24px_60px_rgba(28,26,24,0.16)] flex flex-col gap-3.5"
             )}
           >
             {NAV_LINKS.map(({ label, href }) => (
@@ -206,7 +237,7 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
                 key={label}
                 href={href}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium text-dark-void/75 hover:text-dark-void py-1.5 transition-colors"
+                className="text-sm font-medium tracking-[0.015em] text-[#4A4540] hover:text-[#24211E] py-1.5 transition-colors rounded-lg px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
               >
                 {label}
               </a>
@@ -215,9 +246,9 @@ export default function Navbar({ onOpen, onSchedule }: NavbarProps) {
               type="button"
               onClick={() => { setMenuOpen(false); handleOpen(); }}
               className={cn(
-                "mt-1 w-full py-2.5 rounded-xl text-sm font-semibold cursor-pointer",
-                "bg-[rgba(167,183,231,0.25)] border border-[rgba(167,183,231,0.4)]",
-                "text-dark-void hover:bg-[rgba(167,183,231,0.42)] transition-all"
+                "mt-1 w-full py-3 rounded-full text-sm font-semibold tracking-[0.02em] cursor-pointer",
+                "bg-[#D4B886] text-[#1C1A18] hover:bg-[#C5A059] transition-all shadow-[0_4px_20px_rgba(212,184,134,0.35)]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
               )}
             >
               Schedule Visit

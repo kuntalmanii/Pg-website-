@@ -9,11 +9,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "beige-light":    "#FDFBF7",
-        "beige-card":     "#F4EFEA",
-        "twilight-haze":  "#A7B7E7",
-        "dark-void":      "#050505",
-        "sony-blue":      "#0050FF",
+        "warm-ivory":     "#FAF6F0",
+        "soft-beige":     "#F3ECE2",
+        "stone-white":    "#F7F4EF",
+        "warm-black":     "#24211E",
+        "warm-obsidian":  "#1C1A18",
+        "champagne-gold": "#D4B886",
+        "champagne-dark": "#C5A059",
+        "twilight-haze":  "#9C95A6",
+        "muted-olive":    "#7F826B",
+        "graphite":       "#4A4540",
+        "slate-warm":     "#736B63",
+
+        // Legacy compatibility aliases mapped to luxury palette
+        "beige-light":    "#FAF6F0",
+        "beige-card":     "#F3ECE2",
+        "dark-void":      "#24211E",
+        "sony-blue":      "#D4B886",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],

@@ -60,7 +60,7 @@ export default function Scrollytelling() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activeFeatureId, setActiveFeatureId] = useState<string>(FEATURES[0].id);
-  const [progressPercent, setProgressPercent] = useState<number>(0);
+  const activeFeatureIdRef = useRef<string>(FEATURES[0].id);
   const [isMuted, setIsMuted] = useState(true);
 
   /* Track scroll position */
@@ -83,14 +83,12 @@ export default function Scrollytelling() {
         (f) => latest >= f.scrollStart && latest <= f.scrollEnd
       ) || FEATURES[0];
 
-      if (feature.id !== activeFeatureId) {
+      if (feature.id !== activeFeatureIdRef.current) {
+        activeFeatureIdRef.current = feature.id;
         setActiveFeatureId(feature.id);
       }
-
-      const pct = Math.round(latest * 100);
-      setProgressPercent((prev) => (prev !== pct ? pct : prev));
     });
-  }, [smoothProgress, activeFeatureId]);
+  }, [smoothProgress]);
 
   // GPU accelerated progress width (zero React re-renders)
   const progressWidth = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
@@ -123,6 +121,9 @@ export default function Scrollytelling() {
       const nextMuted = !videoRef.current.muted;
       videoRef.current.muted = nextMuted;
       setIsMuted(nextMuted);
+      if (!nextMuted) {
+        videoRef.current.play().catch(() => {});
+      }
     }
   }, []);
 
@@ -141,7 +142,7 @@ export default function Scrollytelling() {
     <section
       id="scrollytelling"
       ref={containerRef}
-      className="relative w-full bg-[#050505] text-[#FDFBF7]"
+      className="relative w-full bg-[#050505] text-[#FDFBF7] scroll-mt-24"
       style={{ height: "350vh" }}
       aria-label="Room Architecture Showcase"
     >
@@ -155,7 +156,7 @@ export default function Scrollytelling() {
         >
           <video
             ref={videoRef}
-            src="/hero-banner.mp4"
+            src="/luxspace_room_showcase.mp4"
             poster="/luxspace_room_showcase.png"
             autoPlay
             loop
@@ -177,15 +178,15 @@ export default function Scrollytelling() {
         </motion.div>
 
         {/* ── Viewport UI Overlay Grid ────────────────────────────────── */}
-        <div className="relative z-20 w-full h-full flex flex-col justify-between p-6 md:p-12">
+        <div className="relative z-20 w-full h-full flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-16">
 
           {/* ── Top Bar: Section Label & Sound Control ────────────────── */}
           <div className="flex items-center justify-between max-w-6xl mx-auto w-full">
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#A7B7E7]">
+              <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#D4B886]">
                 Room Architecture
               </p>
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[#FDFBF7] mt-0.5">
+              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[#F7F4EF] mt-1">
                 Engineered for living.
               </h2>
             </div>
@@ -193,9 +194,10 @@ export default function Scrollytelling() {
             <button
               type="button"
               onClick={toggleMute}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-black/50 border border-white/15 text-white/85 hover:text-white hover:bg-black/70 transition-all cursor-pointer backdrop-blur-md shadow-lg"
+              aria-label={isMuted ? "Unmute video audio" : "Mute video audio"}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-[#1C1A18]/80 text-[#F7F4EF]/85 hover:text-[#F7F4EF] hover:bg-[#1C1A18]/95 transition-all cursor-pointer backdrop-blur-xl shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
             >
-              {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} className="text-[#A7B7E7]" />}
+              {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} className="text-[#D4B886]" />}
               <span className="text-[10px] uppercase font-semibold tracking-wider">
                 {isMuted ? "Muted" : "Sound On"}
               </span>
@@ -204,7 +206,7 @@ export default function Scrollytelling() {
 
           {/* ── Floating Apple-Style Feature Info Card ────────────────── */}
           <div className="max-w-6xl mx-auto w-full flex items-end">
-            <div className="max-w-sm md:max-w-md w-full mb-4">
+            <div className="max-w-sm md:max-w-lg w-full mb-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeFeature.id}
@@ -212,26 +214,26 @@ export default function Scrollytelling() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -12, scale: 0.98 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="p-6 md:p-7 rounded-3xl backdrop-blur-3xl border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.85)]"
+                  className="p-8 sm:p-9 md:p-10 rounded-3xl backdrop-blur-3xl shadow-[0_30px_70px_rgba(0,0,0,0.6)]"
                   style={{
-                    background: "rgba(5, 5, 5, 0.85)",
+                    background: "rgba(28, 26, 24, 0.85)",
                   }}
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <activeFeature.icon size={16} className="text-[#A7B7E7]" />
-                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#A7B7E7]">
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <activeFeature.icon size={16} className="text-[#D4B886]" />
+                    <span className="text-[10px] font-mono font-medium tracking-[0.18em] uppercase text-[#D4B886]">
                       {activeFeature.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-xl md:text-2xl font-black tracking-tight text-[#FDFBF7]">
+                  <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-[#F7F4EF]">
                     {activeFeature.headline}
                   </h3>
-                  <p className="text-xs md:text-sm font-semibold text-[#A7B7E7] mt-1">
+                  <p className="text-xs md:text-sm font-medium text-[#D4B886] mt-1.5">
                     {activeFeature.subheadline}
                   </p>
 
-                  <p className="text-xs text-[rgba(253,251,247,0.65)] mt-2.5 leading-relaxed">
+                  <p className="text-xs md:text-sm font-normal text-[#B5ACA1] mt-3 leading-relaxed">
                     {activeFeature.detail}
                   </p>
                 </motion.div>
@@ -240,10 +242,10 @@ export default function Scrollytelling() {
           </div>
 
           {/* ── Bottom Dock Bar: Apple Floating Segmented Switcher ────── */}
-          <div className="flex items-center justify-between max-w-6xl mx-auto w-full pt-4 border-t border-white/15 gap-4 flex-wrap">
+          <div className="flex items-center justify-between max-w-6xl mx-auto w-full pt-6 gap-6 flex-wrap">
 
             {/* Apple Floating Dock */}
-            <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl max-w-full overflow-x-auto">
+            <div className="flex items-center gap-1 sm:gap-1.5 p-1.5 rounded-full bg-[#1C1A18]/90 backdrop-blur-2xl shadow-[0_16px_48px_rgba(0,0,0,0.45)] max-w-full overflow-x-auto">
               {FEATURES.map((feature) => {
                 const isActive = activeFeature.id === feature.id;
                 const Icon = feature.icon;
@@ -253,33 +255,28 @@ export default function Scrollytelling() {
                     key={feature.id}
                     type="button"
                     onClick={() => jumpToFeature(feature.scrollStart)}
-                    className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-[11px] sm:text-xs font-medium tracking-[0.015em] whitespace-nowrap transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886] ${
                       isActive
-                        ? "bg-[#FDFBF7] text-[#050505] shadow-lg scale-105"
-                        : "text-[rgba(253,251,247,0.6)] hover:text-[#FDFBF7] hover:bg-white/10"
+                        ? "bg-[#D4B886] text-[#1C1A18] shadow-[0_4px_16px_rgba(212,184,134,0.35)] scale-105"
+                        : "text-[#B5ACA1] hover:text-[#F7F4EF] hover:bg-white/10"
                     }`}
                   >
-                    <Icon size={13} className={isActive ? "text-[#050505]" : "text-[rgba(253,251,247,0.5)]"} />
+                    <Icon size={13} className={isActive ? "text-[#1C1A18]" : "text-[#B5ACA1]"} />
                     <span>{feature.label}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Minimal Scroll Progress Bar */}
-            <div className="flex items-center gap-3">
-              <div className="w-28 sm:w-36 h-1.5 bg-white/15 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-[#A7B7E7] rounded-full"
-                  style={{
-                    width: progressWidth,
-                  }}
-                />
+              {/* Minimal Scroll Progress Bar — no debug counter */}
+              <div className="flex items-center gap-3">
+                <div className="w-28 sm:w-36 h-1.5 bg-[#D4B886]/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-[#D4B886] rounded-full"
+                    style={{ width: progressWidth }}
+                  />
+                </div>
               </div>
-              <span className="text-xs font-mono text-[rgba(253,251,247,0.5)]">
-                {progressPercent}%
-              </span>
-            </div>
 
           </div>
 

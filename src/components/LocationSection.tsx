@@ -113,13 +113,26 @@ function CopyAddressButton() {
 
   const handleCopy = useCallback(async () => {
     try {
-      if (typeof navigator !== "undefined" && navigator.clipboard) {
+      if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(FULL_ADDRESS);
         setCopied(true);
         setTimeout(() => setCopied(false), 2200);
+        return;
       }
+      // Fallback for restricted clipboard context
+      const textarea = document.createElement("textarea");
+      textarea.value = FULL_ADDRESS;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
     } catch {
-      /* fallback — silently fail */
+      /* fallback — fail gracefully */
     }
   }, []);
 
@@ -129,7 +142,7 @@ function CopyAddressButton() {
       onClick={handleCopy}
       whileHover={{ scale: 1.04 }}
       whileTap={{  scale: 0.95 }}
-      className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 z-10"
+      className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0050FF]"
       style={{
         background:     copied ? "rgba(167,183,231,0.95)" : "rgba(253,251,247,0.92)",
         border:         copied ? "1px solid #A7B7E7"      : "1px solid rgba(167,183,231,0.3)",
@@ -178,10 +191,10 @@ export default function LocationSection() {
   return (
     <section
       id="location"
-      className="w-full bg-[#F4EFEA] py-24 md:py-32 px-5 md:px-10"
+      className="w-full bg-[#F3ECE2] py-28 sm:py-36 md:py-44 lg:py-52 px-6 sm:px-10 md:px-16 lg:px-20 scroll-mt-24"
       aria-labelledby="location-heading"
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         {/* ── Section header ─────────────────────────────────────────── */}
         <motion.div
@@ -189,20 +202,20 @@ export default function LocationSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="mb-12 md:mb-16"
+          className="mb-16 md:mb-20 lg:mb-24"
         >
-          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[#A7B7E7] mb-3">
+          <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#D4B886] mb-3">
             Prime location
           </p>
           <h2
             id="location-heading"
-            className="text-[clamp(2rem,5vw,3.5rem)] font-black tracking-[-0.03em] leading-[1.06] text-[#050505]"
+            className="text-[clamp(2.2rem,4.8vw,3.4rem)] font-bold tracking-[-0.025em] leading-[1.1] text-[#24211E]"
           >
             Two minutes from
             <br />
             <span
               style={{
-                background: "linear-gradient(95deg, #050505 30%, #A7B7E7 100%)",
+                background: "linear-gradient(95deg, #24211E 30%, #C5A059 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -213,7 +226,7 @@ export default function LocationSection() {
         </motion.div>
 
         {/* ── Two-column grid ────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
 
           {/* ── Left col: Map + address ────────────────────────────── */}
           <motion.div
@@ -221,16 +234,16 @@ export default function LocationSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.65, ease: EASE }}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-6"
           >
             {/* ── Map container ──────────────────────────────────────── */}
-            <div className="relative" style={{ height: 360 }}>
+            <div className="relative h-[380px] sm:h-[420px] md:h-[460px]">
               {/* Outer glow ring */}
               <div
                 className="absolute -inset-[3px] rounded-[1.75rem] pointer-events-none"
                 style={{
-                  background:  "conic-gradient(from 180deg, rgba(167,183,231,0.45), rgba(0,80,255,0.15), rgba(167,183,231,0.45))",
-                  filter:      "blur(1px)",
+                  background:  "conic-gradient(from 180deg, rgba(212,184,134,0.45), rgba(156,149,166,0.25), rgba(212,184,134,0.45))",
+                  filter:      "blur(2px)",
                   borderRadius: "1.75rem",
                 }}
                 aria-hidden
@@ -238,11 +251,7 @@ export default function LocationSection() {
 
               {/* Map wrapper */}
               <div
-                className="relative w-full h-full overflow-hidden rounded-3xl"
-                style={{
-                  border:    "1px solid rgba(167,183,231,0.3)",
-                  boxShadow: "0 16px 48px rgba(167,183,231,0.2)",
-                }}
+                className="relative w-full h-full overflow-hidden rounded-3xl shadow-[0_20px_60px_rgba(212,184,134,0.18)]"
               >
                 <iframe
                   id="location-map"
@@ -258,16 +267,15 @@ export default function LocationSection() {
 
                 {/* Brand badge — top-left */}
                 <div
-                  className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold z-10"
+                  className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold z-10"
                   style={{
-                    background:     "rgba(253,251,247,0.93)",
-                    border:         "1px solid rgba(167,183,231,0.35)",
-                    backdropFilter: "blur(12px)",
-                    color:          "#050505",
-                    boxShadow:      "0 4px 16px rgba(0,0,0,0.1)",
+                    background:     "rgba(250,246,240,0.96)",
+                    backdropFilter: "blur(16px)",
+                    color:          "#24211E",
+                    boxShadow:      "0 8px 24px rgba(28,26,24,0.12)",
                   }}
                 >
-                  <MapPin size={11} style={{ color: "#A7B7E7" }} />
+                  <MapPin size={12} style={{ color: "#D4B886" }} />
                   Luxspace PG
                 </div>
 
@@ -278,24 +286,23 @@ export default function LocationSection() {
 
             {/* Address card */}
             <motion.div
-              whileHover={{ y: -2 }}
-              transition={{ duration: 0.22 }}
-              className="rounded-2xl p-5"
-              style={{ background: "#050505", border: "1px solid rgba(253,251,247,0.07)" }}
+              whileHover={{ y: -3, boxShadow: "0 28px 60px rgba(0,0,0,0.45)" }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
+              className="rounded-3xl p-7 md:p-8 bg-[#1C1A18] shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-4">
                 <div
-                  className="mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(167,183,231,0.18)" }}
+                  className="mt-0.5 w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(212,184,134,0.18)" }}
                 >
-                  <MapPin size={16} style={{ color: "#A7B7E7" }} />
+                  <MapPin size={18} style={{ color: "#D4B886" }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[rgba(167,183,231,0.6)] mb-1">
+                  <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-[#D4B886] mb-1">
                     Full Address
                   </p>
-                  <p className="text-sm font-bold text-[#FDFBF7] leading-snug">J-14, Royal Street Lane</p>
-                  <p className="text-sm text-[rgba(253,251,247,0.55)] leading-snug">
+                  <p className="text-base font-bold text-[#F7F4EF] leading-snug">J-14, Royal Street Lane</p>
+                  <p className="text-sm font-normal text-[#B5ACA1] leading-relaxed mt-1">
                     80 Raipur Khadar, Sector 126<br />
                     Noida, Uttar Pradesh — 201 313
                   </p>
@@ -304,12 +311,12 @@ export default function LocationSection() {
                     href="https://maps.app.goo.gl/adn6FJcrz7XnTu9o9"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold transition-colors duration-200"
-                    style={{ color: "#A7B7E7" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#FDFBF7")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#A7B7E7")}
+                    className="mt-4 inline-flex items-center gap-2 text-xs font-medium tracking-[0.015em] transition-colors duration-200 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
+                    style={{ color: "#D4B886" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#F7F4EF")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#D4B886")}
                   >
-                    <Navigation size={11} />
+                    <Navigation size={12} />
                     Get Directions
                   </a>
                 </div>
@@ -327,14 +334,13 @@ export default function LocationSection() {
           >
             {/* ── Tabs ───────────────────────────────────────────────── */}
             <div>
-              <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[rgba(5,5,5,0.38)] mb-3 px-1">
+              <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#736B63] mb-3 px-1">
                 Distance from Luxspace
               </p>
 
               {/* Tab pills */}
               <div
-                className="flex gap-2 p-1 rounded-2xl mb-4"
-                style={{ background: "rgba(5,5,5,0.05)", border: "1px solid rgba(5,5,5,0.06)" }}
+                className="flex gap-2 p-1.5 rounded-2xl mb-4 bg-[#24211E]/5 shadow-inner"
                 role="tablist"
                 aria-label="Distance tabs"
               >
@@ -347,18 +353,19 @@ export default function LocationSection() {
                       id={tab.id}
                       role="tab"
                       aria-selected={isActive}
+                      aria-controls="location-tabpanel"
                       onClick={() => setActiveTab(tab.id)}
                       whileTap={{ scale: 0.97 }}
-                      className="flex-1 flex flex-col items-center gap-1 py-2.5 px-2 rounded-xl text-xs font-semibold transition-colors duration-200 relative"
-                      style={{ color: isActive ? "#050505" : "rgba(5,5,5,0.45)" }}
+                      className="flex-1 flex flex-col items-center gap-1 py-2.5 px-2 rounded-xl text-xs font-semibold transition-colors duration-200 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
+                      style={{ color: isActive ? "#24211E" : "#736B63" }}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="tab-bg"
                           className="absolute inset-0 rounded-xl"
                           style={{
-                            background: "#FDFBF7",
-                            boxShadow:  "0 2px 12px rgba(0,0,0,0.08)",
+                            background: "#FAF6F0",
+                            boxShadow:  "0 4px 16px rgba(28,26,24,0.08)",
                           }}
                           transition={{ duration: 0.28, ease: EASE }}
                         />
@@ -378,36 +385,35 @@ export default function LocationSection() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
+                  id="location-tabpanel"
+                  role="tabpanel"
+                  aria-labelledby={activeTab}
                   initial={{ opacity: 0, y: 8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{   opacity: 0, y: -6, scale: 0.98 }}
                   transition={{ duration: 0.28, ease: EASE }}
-                  className="rounded-2xl p-4 flex items-center gap-4"
-                  style={{
-                    background: `rgba(167,183,231,0.1)`,
-                    border:     `1px solid rgba(167,183,231,0.28)`,
-                  }}
+                  className="rounded-2xl p-5 flex items-center gap-4 bg-[#D4B886]/14 shadow-[0_8px_24px_rgba(212,184,134,0.12)]"
                 >
                   {/* Time badge */}
                   <div
                     className="shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center gap-0.5"
                     style={{
-                      background: active.color,
-                      boxShadow:  `0 6px 20px rgba(167,183,231,0.4)`,
+                      background: "#D4B886",
+                      boxShadow:  `0 6px 20px rgba(212,184,134,0.35)`,
                     }}
                   >
-                    <active.icon size={18} style={{ color: "#050505" }} strokeWidth={2.2} />
-                    <span className="text-[10px] font-black text-[#050505] text-center leading-tight">
+                    <active.icon size={18} style={{ color: "#1C1A18" }} strokeWidth={2.2} />
+                    <span className="text-[10px] font-black text-[#1C1A18] text-center leading-tight">
                       {active.time.split(" ").slice(0, 2).join(" ")}
                     </span>
-                    <span className="text-[9px] text-[rgba(5,5,5,0.6)] font-semibold">
+                    <span className="text-[9px] text-[#1C1A18]/70 font-semibold">
                       {active.time.split(" ").slice(2).join(" ")}
                     </span>
                   </div>
 
                   <div>
-                    <p className="text-sm font-black text-[#050505]">{active.short}</p>
-                    <p className="text-xs text-[rgba(5,5,5,0.5)] mt-0.5 leading-snug">{active.detail}</p>
+                    <p className="text-sm font-black text-[#24211E]">{active.short}</p>
+                    <p className="text-xs text-[#736B63] mt-0.5 leading-snug">{active.detail}</p>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -416,15 +422,15 @@ export default function LocationSection() {
             {/* ── Nearby landmarks card grid ────────────────────────── */}
             <div>
               <div className="flex items-center justify-between mb-3 px-1">
-                <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[rgba(5,5,5,0.38)]">
+                <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#736B63]">
                   All nearby landmarks
                 </p>
-                <span className="text-[10px] font-semibold text-[rgba(5,5,5,0.28)]">
+                <span className="text-[10px] font-semibold text-[#736B63]/60">
                   {NEARBY.length} places
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {NEARBY.map(({ id, icon: Icon, category, label, detail, time, fill, accent, url }, i) => (
                   <motion.a
                     key={id}
@@ -436,15 +442,9 @@ export default function LocationSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, ease: EASE, delay: 0.07 * i }}
-                    whileHover={{ y: -3, boxShadow: "0 10px 28px rgba(0,0,0,0.09)" }}
+                    whileHover={{ y: -4, boxShadow: "0 14px 32px rgba(36,33,30,0.08)" }}
                     whileTap={{ scale: 0.97 }}
-                    className="group flex flex-col gap-3 p-3.5 rounded-2xl cursor-pointer"
-                    style={{
-                      background: "rgba(253,251,247,0.85)",
-                      border:     "1px solid rgba(5,5,5,0.07)",
-                      boxShadow:  "0 2px 10px rgba(0,0,0,0.04)",
-                      transition: "box-shadow 0.25s ease, transform 0.25s ease",
-                    }}
+                    className="group flex flex-col gap-3 p-4.5 rounded-2xl cursor-pointer bg-[#FAF6F0] shadow-[0_6px_24px_rgba(28,26,24,0.04)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
                   >
                     {/* Top row: icon + category badge */}
                     <div className="flex items-start justify-between">
@@ -470,8 +470,8 @@ export default function LocationSection() {
 
                     {/* Label + detail */}
                     <div>
-                      <p className="text-[13px] font-bold text-[#050505] leading-tight">{label}</p>
-                      <p className="text-[11px] text-[rgba(5,5,5,0.45)] mt-0.5 leading-snug">{detail}</p>
+                      <p className="text-[13px] font-bold text-[#24211E] leading-tight">{label}</p>
+                      <p className="text-[11px] text-[#736B63] mt-0.5 leading-snug">{detail}</p>
                     </div>
 
                     {/* Distance bar + time */}
@@ -479,7 +479,7 @@ export default function LocationSection() {
                       {/* Proximity bar */}
                       <div
                         className="w-full h-[3px] rounded-full overflow-hidden"
-                        style={{ background: "rgba(5,5,5,0.07)" }}
+                        style={{ background: "rgba(36,33,30,0.07)" }}
                       >
                         <motion.div
                           initial={{ width: 0 }}
@@ -493,7 +493,7 @@ export default function LocationSection() {
 
                       {/* Time pill row */}
                       <div className="flex items-center gap-1">
-                        <Clock size={10} style={{ color: "rgba(5,5,5,0.35)" }} strokeWidth={2.2} />
+                        <Clock size={10} style={{ color: "#736B63" }} strokeWidth={2.2} />
                         <span className="text-[11px] font-bold" style={{ color: accent }}>
                           {time}
                         </span>

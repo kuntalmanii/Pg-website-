@@ -23,10 +23,10 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
   return (
     <footer
       id="footer"
-      className="w-full bg-[#050505] text-[#FDFBF7] pt-20 pb-12 px-6 md:px-12 border-t border-[rgba(253,251,247,0.08)]"
+      className="w-full bg-[#1C1A18] text-[#F7F4EF] pt-28 sm:pt-36 md:pt-44 pb-28 sm:pb-16 px-6 sm:px-10 md:px-16 lg:px-20 border-t border-[rgba(212,184,134,0.15)] scroll-mt-24"
       aria-label="Site footer"
     >
-      <div className="max-w-5xl mx-auto flex flex-col gap-16">
+      <div className="max-w-6xl mx-auto flex flex-col gap-20">
 
         {/* ── 1. Minimal Callout Banner ───────────────────────────────── */}
         <motion.div
@@ -35,33 +35,29 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden"
-          style={{
-            background: "rgba(253, 251, 247, 0.03)",
-            border:     "1px solid rgba(167, 183, 231, 0.15)",
-          }}
+          className="rounded-3xl p-10 sm:p-14 lg:p-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 relative overflow-hidden scroll-mt-24 bg-[rgba(250,246,240,0.04)] backdrop-blur-2xl shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
         >
           {/* Subtle ambient glow */}
           <div
-            className="pointer-events-none absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl opacity-10"
-            style={{ background: "#A7B7E7" }}
+            className="pointer-events-none absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl opacity-20"
+            style={{ background: "#D4B886" }}
             aria-hidden
           />
 
           <div>
-            <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#A7B7E7] mb-1.5">
+            <p className="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-[#D4B886] mb-2">
               ALL-INCLUSIVE RESIDENCE
             </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#FDFBF7]">
-              Starting at ₹12,000 <span className="text-sm font-normal text-[rgba(253,251,247,0.45)]">/ month</span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#F7F4EF]">
+              Starting at ₹12,000 <span className="text-sm font-normal text-[#B5ACA1]">/ month</span>
             </h2>
-            <p className="mt-1.5 text-xs text-[rgba(253,251,247,0.5)]">
+            <p className="mt-2 text-xs sm:text-sm font-normal text-[#B5ACA1] leading-relaxed">
               3 daily meals, high-speed Wi-Fi & daily housekeeping included.
             </p>
           </div>
 
           {/* Action CTAs */}
-          <div className="flex items-center gap-3 flex-wrap shrink-0">
+          <div className="flex items-center gap-4 flex-wrap shrink-0">
             <motion.button
               id="footer-schedule-btn"
               type="button"
@@ -69,13 +65,13 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
                 e.preventDefault();
                 handleOpen();
               }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02, boxShadow: "0 12px 36px rgba(212,184,134,0.5)" }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold text-[#050505] transition-all duration-200 cursor-pointer shadow-lg"
-              style={{ background: "#A7B7E7" }}
+              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-xs font-semibold tracking-[0.02em] text-[#1C1A18] transition-all duration-200 cursor-pointer shadow-[0_8px_30px_rgba(212,184,134,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886]"
+              style={{ background: "#D4B886" }}
             >
               Schedule Visit
-              <ArrowUpRight size={14} />
+              <ArrowUpRight size={15} />
             </motion.button>
 
             <motion.a
@@ -85,13 +81,9 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-semibold text-[#FDFBF7] transition-all duration-200"
-              style={{
-                background: "rgba(253, 251, 247, 0.06)",
-                border:     "1px solid rgba(253, 251, 247, 0.12)",
-              }}
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full text-xs font-semibold tracking-[0.02em] text-[#F7F4EF] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] bg-[rgba(250,246,240,0.08)] backdrop-blur-xl shadow-md hover:bg-[rgba(250,246,240,0.14)]"
             >
-              <MessageCircle size={14} className="text-[#25D366]" />
+              <MessageCircle size={15} className="text-[#25D366]" />
               WhatsApp
             </motion.a>
           </div>
@@ -103,21 +95,21 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 pb-12 border-b border-[rgba(253,251,247,0.06)]"
+          className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 lg:gap-20 pb-16"
         >
           {/* Brand & Address Column (6 cols) */}
           <div className="md:col-span-6 flex flex-col gap-3">
-            <h3 className="text-xl font-black tracking-tight text-[#FDFBF7]">
-              LUX<span className="text-[#A7B7E7]">SPACE</span>
+            <h3 className="text-xl font-bold tracking-tight text-[#F7F4EF]">
+              LUX<span className="text-[#D4B886]">SPACE</span>
             </h3>
-            <p className="text-xs text-[rgba(253,251,247,0.5)] max-w-sm leading-relaxed">
+            <p className="text-xs font-normal text-[#B5ACA1] max-w-sm leading-relaxed">
               Premium student living accommodation. Designed for comfort, study productivity, and peace of mind.
             </p>
             <a
               href="https://maps.app.goo.gl/adn6FJcrz7XnTu9o9"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1.5 text-xs text-[#A7B7E7] hover:underline"
+              className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-[#D4B886] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886] rounded"
             >
               <MapPin size={13} />
               Sector 126, Noida &bull; 2 Min Walk from Amity Gate 2
@@ -126,7 +118,7 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
 
           {/* Navigation Links Column (3 cols) */}
           <div className="md:col-span-3 flex flex-col gap-3">
-            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[rgba(253,251,247,0.3)]">
+            <span className="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-[#D4B886]/80">
               NAVIGATION
             </span>
             <ul className="flex flex-col gap-2">
@@ -134,7 +126,7 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
                 <li key={label}>
                   <a
                     href={href}
-                    className="text-xs text-[rgba(253,251,247,0.6)] hover:text-[#FDFBF7] transition-colors duration-200"
+                    className="text-xs font-normal text-[#B5ACA1] hover:text-[#F7F4EF] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886] rounded px-1"
                   >
                     {label}
                   </a>
@@ -145,19 +137,19 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
 
           {/* Direct Contact Column (3 cols) */}
           <div className="md:col-span-3 flex flex-col gap-3">
-            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[rgba(253,251,247,0.3)]">
+            <span className="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-[#D4B886]/80">
               CONTACT
             </span>
-            <ul className="flex flex-col gap-2 text-xs text-[rgba(253,251,247,0.6)]">
+            <ul className="flex flex-col gap-2 text-xs font-normal text-[#B5ACA1]">
               <li>
-                <a href="tel:+918882813740" className="inline-flex items-center gap-2 hover:text-[#FDFBF7] transition-colors">
-                  <Phone size={13} className="text-[#A7B7E7]" />
+                <a href="tel:+918882813740" className="inline-flex items-center gap-2 hover:text-[#F7F4EF] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886] rounded px-1">
+                  <Phone size={13} className="text-[#D4B886]" />
                   +91 88828 13740
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@luxspacepg.in" className="inline-flex items-center gap-2 hover:text-[#FDFBF7] transition-colors">
-                  <Mail size={13} className="text-[#A7B7E7]" />
+                <a href="mailto:hello@luxspacepg.in" className="inline-flex items-center gap-2 hover:text-[#F7F4EF] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B886] rounded px-1">
+                  <Mail size={13} className="text-[#D4B886]" />
                   hello@luxspacepg.in
                 </a>
               </li>
@@ -172,17 +164,17 @@ export default function Footer({ onOpen, onSchedule }: FooterProps) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[rgba(253,251,247,0.35)]"
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#B5ACA1]/60"
         >
           <p>&copy; {new Date().getFullYear()} Luxspace PG. All rights reserved.</p>
 
           <div className="flex items-center gap-6">
-            <a href="#terms" onClick={(e) => e.preventDefault()} className="hover:text-[rgba(253,251,247,0.7)] transition-colors">
+            <span className="opacity-50 cursor-default" aria-label="Terms of Stay — coming soon">
               Terms of Stay
-            </a>
-            <a href="#privacy" onClick={(e) => e.preventDefault()} className="hover:text-[rgba(253,251,247,0.7)] transition-colors">
+            </span>
+            <span className="opacity-50 cursor-default" aria-label="Privacy Policy — coming soon">
               Privacy Policy
-            </a>
+            </span>
           </div>
         </motion.div>
 
